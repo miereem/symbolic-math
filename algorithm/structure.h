@@ -1,10 +1,9 @@
-
 #ifndef ALGORITHM_STRUCTURE_H
 #define ALGORITHM_STRUCTURE_H
 typedef enum type{
-    EXPRESSION_UNARY,
-    EXPRESSION_BINARY,
-    LIST
+    OPERATOR,
+    CONSTANT,
+    VARIABLE
 } TokenType;
 typedef enum operation{
     PLUS,
@@ -15,23 +14,20 @@ typedef enum operation{
     COS,
     TAN,
     CTAN,
-    ASIN,
-    ACOS,
-    ATAN,
-    ACTAN,
     POWER,
-    LOGARITHM
+    LOGARITHM,
+    NEGATIVE
 } OperationType;
 
 typedef struct ExpressionNode{
     TokenType type;
-    OperationType operation;
     union {
-        double digit;
-        char* literal;
+        OperationType operationType;
+        double constant;
+        char variable;
     } value;
-    struct expression* left;
-    struct expression* right;
+    struct ExpressionNode* left;
+    struct ExpressionNode* right;
 } ExpressionNode;
 
 #endif //ALGORITHM_STRUCTURE_H
