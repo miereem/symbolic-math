@@ -50,6 +50,7 @@ struct ExpressionNode* createFunctionNode(const char* functionName) {
 }
 
 struct ExpressionNode* parseFunction(const char** expr) {
+    printf("%c ", **expr);
     char functionName[50];
     sscanf(*expr, "%49[^ (]", functionName); // Read until the first space or opening parenthesis
     *expr += strlen(functionName);
@@ -65,12 +66,14 @@ struct ExpressionNode* parseFunction(const char** expr) {
         if (**expr == ',') {
             (*expr)++;
         }
+        printf("%s ", *expr);
+        functionNode->right = parsePrimary(expr);      //const char *input = "7+sin(cos(x)-7)";
 
-        functionNode->right = parsePrimary(expr);
 
         if (**expr == ')') {
             (*expr)++;
         } else {
+            printf("%c ", **expr);
             fprintf(stderr, "Error: Mismatched parentheses\n");
             exit(EXIT_FAILURE);
         }
@@ -175,7 +178,7 @@ void printPrefix(struct ExpressionNode *node) {
         } else if (node->type == VARIABLE) {
             printf("%c ", node->variable);
         } else if (node->type == FUNCTION) {
-            printf("%c ", node->function);
+            printf("%s ", node->function);
         }
         printPrefix(node->left);
         printPrefix(node->right);
