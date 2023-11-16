@@ -5,4 +5,6 @@ set(CMAKE_C_STANDARD 11)
 
 add_executable(untitled1 main.c
         tree/structure.c
-)
+        tree/structure.h
+        tree/parser.c
+        tree/parser.h)

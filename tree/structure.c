@@ -1,42 +1,6 @@
 #include <stdlib.h>
-
-#ifndef ALGORITHM_STRUCTURE_H
-#define ALGORITHM_STRUCTURE_H
-typedef enum {
-        OPERATOR,
-        VARIABLE,
-        CONSTANT
-} TokenType;
-
-typedef enum {
-    PLUS,
-    MINUS,
-    MUL,
-    DIV,
-    SIN,
-    COS,
-    TAN,
-    CTAN,
-    ASIN,
-    ACOS,
-    ATAN,
-    ACTAN,
-    POWER,
-    LOG,
-    NEG
-} OperatorType;
-
-typedef struct ExpressionNode {
-    TokenType type;
-    union {
-        OperatorType operatorType;
-        char variable;
-        double constant;
-    } value;
-
-    struct ExpressionNode* left;
-    struct ExpressionNode* right;
-} ExpressionNode;
+#include <stdio.h>
+#include "structure.h"
 
 ExpressionNode* createOperandNode(TokenType type, double value) {
     ExpressionNode* node = (ExpressionNode*)malloc(sizeof(ExpressionNode));
@@ -84,5 +48,35 @@ void freeExpressionTree(ExpressionNode* root) {
     free(root);
 }
 
+//
+//ExpressionNode* createExpressionTree(ExpressionNode expressionNode) {
+//    if (expressionNode.type == OPERATOR) {
+//
+//        ExpressionNode* operatorNode = createOperatorNode(());
+//    } else if (expressionNode.type == VARIABLE) {
+//        ExpressionNode* operand1 = createOperandNode(CONSTANT, 3.0);
+//    } else if (expressionNode.type == CONSTANT) {
+//
+//    } else {
+//        fprintf(stderr, "Error: Unrecognized token\n");
+//        exit(EXIT_FAILURE);
+//    }
+//    ExpressionNode* operatorNode = createOperatorNode(ADD);
+//
+//    ExpressionNode* operand1 = createOperandNode(CONSTANT, 3.0);
+//    if (operand2->type == OPERATOR) {
+//        ExpressionNode* operand2 = createExpressionTree(operator);
+//    } else {
+//        ExpressionNode* operand2 = createOperandNode(CONSTANT, 4.0);
+//    }
+//
+//
+//    operatorNode->left = operand1;
+//    operatorNode->right = operand2;
+//
+//    return operatorNode;
+//}
 
-#endif //ALGORITHM_STRUCTURE_H
+
+
+
