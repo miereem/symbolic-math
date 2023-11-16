@@ -3,7 +3,7 @@
 #include "tree/parser.h"
 
 int main() {
-    const char *input = "sin(x)+pow(x,(1/2))*(3+1)";
+    const char *input = "sin((pow(x,2)+1))";
     struct ExpressionNode *ast = parseExpression(&input, 0);
 
     printf("Prefix Notation: ");

@@ -10,8 +10,6 @@ typedef struct ExpressionNode ExpressionNode;
 // Определяем приоритет
 int getPrecedence(char op) {
     switch (op) {
-        case 'sin':
-            return 0;
         case '+':
         case '-':
             return 1;
@@ -34,29 +32,65 @@ int parseNumber(const char **expr) {
 }
 
 
-struct ExpressionNode* createFunctionNode(const char* functionName) {
+OperationType defineOperationType(const char *name);
+
+struct ExpressionNode *createFunctionNode(const char *functionName) {
     printf("%c ", *functionName);
-    struct ExpressionNode* node = (ExpressionNode*)malloc(sizeof(ExpressionNode));
+
+    int len = strlen(functionName);
+    struct ExpressionNode *node = (ExpressionNode *) malloc(sizeof(ExpressionNode));
     if (node == NULL) {
         exit(EXIT_FAILURE);
     }
 
     node->type = FUNCTION;
     node->function = strdup(functionName);
+    node->operationType = defineOperationType(functionName);
     node->left = NULL;
     node->right = NULL;
+
 
     return node;
 }
 
-struct ExpressionNode* parseFunction(const char** expr) {
+OperationType defineSimpleOperationType(const char name) {
+    if (name == '+') {
+        return PLUS;
+    } else if (name == '-') {
+        return MINUS;
+    } else if (name == '*') {
+        return MULTIPLICATION;
+    } else if (name == '/') {
+        return DIVISION;
+    };
+}
+
+OperationType defineOperationType(const char *name) {
+    if (strcmp(name, "sin") != 0) {
+        return SIN;
+    } else if (strcmp(name, "cos") != 0) {
+        return COS;
+    } else if (strcmp(name, "pow") != 0) {
+        return POWER;
+    } else if (strcmp(name, "tan") != 0) {
+        return TAN;
+    } else if (strcmp(name, "ctan") != 0) {
+        return CTAN;
+    } else if (strcmp(name, "log") != 0) {
+        return LOGARITHM;
+    }
+
+    return POWER;
+}
+
+struct ExpressionNode *parseFunction(const char **expr) {
     printf("%c ", **expr);
     char functionName[50];
     sscanf(*expr, "%49[^ (]", functionName); // Read until the first space or opening parenthesis
     *expr += strlen(functionName);
 
 
-    ExpressionNode* functionNode = createFunctionNode(functionName);
+    ExpressionNode *functionNode = createFunctionNode(functionName);
 
     if (**expr == '(') {
         (*expr)++;
@@ -99,9 +133,10 @@ char parseVariable(const char **expr) {
 
 // Создаем ноду
 
-struct ExpressionNode *createNode(enum TokenType type, int operand, char variable, char op, struct ExpressionNode *left,
+struct ExpressionNode *createNode(enum TokenType type, int operand, char variable, char op, OperationType operationType,
+                                  struct ExpressionNode *left,
                                   struct ExpressionNode *right) {
-    struct ExpressionNode *node = (struct ExpressionNode *)malloc(sizeof(struct ExpressionNode));
+    struct ExpressionNode *node = (struct ExpressionNode *) malloc(sizeof(struct ExpressionNode));
     if (!node) {
         fprintf(stderr, "Error: Memory allocation failure\n");
         exit(EXIT_FAILURE);
@@ -114,6 +149,7 @@ struct ExpressionNode *createNode(enum TokenType type, int operand, char variabl
         node->variable = variable;
     } else if (type == OPERATOR) {
         node->op = op;
+        node->operationType = defineSimpleOperationType(op);
     }
     node->left = left;
     node->right = right;
@@ -122,7 +158,7 @@ struct ExpressionNode *createNode(enum TokenType type, int operand, char variabl
 }
 
 // Parse a primary expression (number or expression in parentheses)
-struct ExpressionNode* parsePrimary(const char **expr) {
+struct ExpressionNode *parsePrimary(const char **expr) {
     if (**expr == '(') {
         (*expr)++;
         struct ExpressionNode *result = parseExpression(expr, 0);
@@ -134,20 +170,20 @@ struct ExpressionNode* parsePrimary(const char **expr) {
         }
         return result;
     } else if (isalpha(**expr)) {
-        if (isalpha(*((*expr)+1)) || *((*expr)+1) == '(' ) {
+        if (isalpha(*((*expr) + 1)) || *((*expr) + 1) == '(') {
             return parseFunction(expr);
         } else {
             char variable = parseVariable(expr);
-            return createNode(VARIABLE, 0, variable, 0, NULL, NULL);
+            return createNode(VARIABLE, 0, variable, 0, -1, NULL, NULL);
         }
     } else {
         int operand = parseNumber(expr);
-        return createNode(NUMBER, operand, 0,0, NULL, NULL);
+        return createNode(NUMBER, operand, 0, 0, -1, NULL, NULL);
     }
 }
 
 // выражения
-struct ExpressionNode* parseExpression(const char **expr, int minPrecedence) {
+struct ExpressionNode *parseExpression(const char **expr, int minPrecedence) {
     struct ExpressionNode *leftOperand = parsePrimary(expr);
 
     while (1) {
@@ -164,7 +200,7 @@ struct ExpressionNode* parseExpression(const char **expr, int minPrecedence) {
         struct ExpressionNode *rightOperand = parseExpression(expr, currentPrecedence);
 
         // новая нода
-        leftOperand = createNode(OPERATOR, 0, 0, op, leftOperand, rightOperand);
+        leftOperand = createNode(OPERATOR, 0, 0, op, -1, leftOperand, rightOperand);
     }
 }
 
