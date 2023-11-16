@@ -3,14 +3,14 @@
 ExpressionNode *createOperation(OperationType operationType) {
     ExpressionNode *expressionNode = (ExpressionNode *) malloc(sizeof(ExpressionNode));
     expressionNode->type = OPERATOR;
-    expressionNode->value.operationType = operationType;
+    expressionNode->operationType = operationType;
     return expressionNode;
 }
 
 ExpressionNode *createConst(double constant) {
     ExpressionNode *expressionNode = (ExpressionNode *) malloc(sizeof(ExpressionNode));
     expressionNode->type = CONSTANT;
-    expressionNode->value.constant = constant;
+    expressionNode->operand = constant;
     return expressionNode;
 }
 ExpressionNode *makeCopy(ExpressionNode * expressionNode) {

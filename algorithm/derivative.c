@@ -9,12 +9,12 @@ void derivative(ExpressionNode *expressionTree) {
 
 ExpressionNode *derivateExpression(ExpressionNode *expressionNode) {
     if (expressionNode->type == CONSTANT) {
-        expressionNode->value.constant = 0;
+        expressionNode->operand = 0;
     } else if (expressionNode->type == VARIABLE) {
         expressionNode->type=CONSTANT;
-        expressionNode->value.constant = 1;
+        expressionNode->operand = 1;
     } else {
-        switch (expressionNode->value.operationType) {
+        switch (expressionNode->operationType) {
             case PLUS:
                 expressionNode->left = derivateExpression(expressionNode->left);
                 expressionNode->right = derivateExpression(expressionNode->right);
@@ -72,7 +72,7 @@ void division(ExpressionNode *expressionNode) {
     expressionMinus->left = expressionML;
     expressionMinus->right = expressionMR;
 
-    expressionNode->value.operationType = DIVISION;
+    expressionNode->operationType = DIVISION;
     expressionNode->left = expressionMinus;
     expressionNode->right = expressionPower;
 }
@@ -88,7 +88,7 @@ void multiplication(ExpressionNode *expressionNode) {
     expressionMR->left = derivateExpression(makeCopy(expressionNode->right));
     expressionMR->right = expressionNode->left;
 
-    expressionNode->value.operationType = PLUS;
+    expressionNode->operationType = PLUS;
     expressionNode->left = expressionML;
     expressionNode->right = expressionMR;
 }

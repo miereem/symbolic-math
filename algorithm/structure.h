@@ -22,10 +22,12 @@ typedef enum operation{
 typedef struct ExpressionNode{
     TokenType type;
     union {
-        OperationType operationType;
-        double constant;
+        double operand;
         char variable;
-    } value;
+        char op;
+        char* function
+    };
+    OperationType operationType;
     struct ExpressionNode* left;
     struct ExpressionNode* right;
 } ExpressionNode;

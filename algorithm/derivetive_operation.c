@@ -3,14 +3,14 @@
 #include "derivetive_operations.h"
 
 ExpressionNode *sin_d(ExpressionNode *expressionNode) {
-    expressionNode->value.operationType = COS;
+    expressionNode->operationType = COS;
     return expressionNode;
 }
 
 ExpressionNode *cos_d(ExpressionNode *expressionNode) {
     ExpressionNode *neg = createOperation(NEGATIVE);
     neg->left = expressionNode;
-    expressionNode->value.operationType = SIN;
+    expressionNode->operationType = SIN;
     return neg;
 }
 ExpressionNode *pow_d(ExpressionNode *expressionNode) {
@@ -38,7 +38,7 @@ ExpressionNode *log_d(ExpressionNode *expressionNode) {
     mult->left= expressionNode->right;
 
     expressionNode->left->type=CONSTANT;
-    expressionNode->left->value.constant=exp(1);
+    expressionNode->left->operand=exp(1);
     mult->right=expressionNode;
 
     return division;
@@ -47,7 +47,7 @@ ExpressionNode *tan_d(ExpressionNode *expressionNode) {
     ExpressionNode *division = createOperation(DIVISION);
     division->left = createConst(1);
 
-    expressionNode->value.operationType=COS;
+    expressionNode->operationType=COS;
 
     ExpressionNode *mult = createOperation(POWER);
     mult->left= expressionNode;
@@ -59,7 +59,7 @@ ExpressionNode *ctan_d(ExpressionNode *expressionNode) {
     ExpressionNode *division = createOperation(DIVISION);
     division->left = createConst(1);
 
-    expressionNode->value.operationType=SIN;
+    expressionNode->operationType=SIN;
 
     ExpressionNode *mult = createOperation(POWER);
     mult->left= expressionNode;

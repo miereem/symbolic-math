@@ -6,21 +6,21 @@ int main() {
     ExpressionNode *expressionNode = (ExpressionNode *) malloc(sizeof(ExpressionNode));
 
     expressionNode->type = OPERATOR;
-    expressionNode->value.operationType = PLUS;
+    expressionNode->operationType = PLUS;
 
 
     ExpressionNode *expressionNodeL = (ExpressionNode *) malloc(sizeof(ExpressionNode));
     expressionNodeL->type = CONSTANT;
-    expressionNodeL->value.constant = 8;
+    expressionNodeL->operand = 8;
 
     ExpressionNode *expressionNodeLL = (ExpressionNode *) malloc(sizeof(ExpressionNode));
     expressionNodeLL->type = VARIABLE;
-    expressionNodeLL->value.variable = 'a';
+    expressionNodeLL->variable = 'a';
 
     ExpressionNode *expressionNodeR = (ExpressionNode *) malloc(sizeof(ExpressionNode));
 
     expressionNodeR->type = OPERATOR;
-    expressionNodeR->value.operationType = SIN;
+    expressionNodeR->operationType = SIN;
     expressionNodeR->left = expressionNodeLL;
 
     expressionNode->left=expressionNodeL;
