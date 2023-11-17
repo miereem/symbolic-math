@@ -8,10 +8,10 @@ void derivative(ExpressionNode *expressionTree) {
 }
 
 ExpressionNode *derivateExpression(ExpressionNode *expressionNode) {
-    if (expressionNode->type == CONSTANT) {
+    if (expressionNode->type == NUMBER) {
         expressionNode->operand = 0;
     } else if (expressionNode->type == VARIABLE) {
-        expressionNode->type=CONSTANT;
+        expressionNode->type=NUMBER;
         expressionNode->operand = 1;
     } else {
         switch (expressionNode->operationType) {
@@ -96,8 +96,11 @@ void multiplication(ExpressionNode *expressionNode) {
 void unaryDerivative(ExpressionNode **expressionNode, ExpressionNode *(*dirative)(ExpressionNode *)) {
     ExpressionNode *expressionNodeMain = createOperation(MULTIPLICATION);
     ExpressionNode *copyLeftNode = makeCopy((*expressionNode)->left);
-    expressionNodeMain->left = (*dirative)(*expressionNode);
-    expressionNodeMain->right = derivateExpression(copyLeftNode);
+    ExpressionNode * left = (*dirative)(*expressionNode);
+    ExpressionNode * right = derivateExpression(copyLeftNode);
+    expressionNodeMain->left = left;
+    expressionNodeMain->right = right;
+
     *expressionNode = expressionNodeMain;
 }
 

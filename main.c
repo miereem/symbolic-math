@@ -1,33 +1,21 @@
 #include <stdio.h>
-#include "algorithm//derivative.c"
+#include <ctype.h>
+#include "tree/parser.h"
+#include "algorithm/derivative.h"
+#include "algorithm/derivative.c"
 
 int main() {
-    printf("Hello, World!\n");
-    ExpressionNode *expressionNode = (ExpressionNode *) malloc(sizeof(ExpressionNode));
-
-    expressionNode->type = OPERATOR;
-    expressionNode->operationType = PLUS;
-
-
-    ExpressionNode *expressionNodeL = (ExpressionNode *) malloc(sizeof(ExpressionNode));
-    expressionNodeL->type = CONSTANT;
-    expressionNodeL->operand = 8;
-
-    ExpressionNode *expressionNodeLL = (ExpressionNode *) malloc(sizeof(ExpressionNode));
-    expressionNodeLL->type = VARIABLE;
-    expressionNodeLL->variable = 'a';
-
-    ExpressionNode *expressionNodeR = (ExpressionNode *) malloc(sizeof(ExpressionNode));
-
-    expressionNodeR->type = OPERATOR;
-    expressionNodeR->operationType = SIN;
-    expressionNodeR->left = expressionNodeLL;
-
-    expressionNode->left=expressionNodeL;
-    expressionNode->right=expressionNodeR;
+    const char *input = "sin((pow(x,2)+1))";
+    struct ExpressionNode *ast = parseExpression(&input, 0);
+    printPrefix(ast);
+    struct ExpressionNode * der= derivateExpression(ast);
+    printf("Prefix Notation: ");
+    printInfix(der);
+    printf("\n");
 
 
-    derivative(expressionNode);
-//    printf(expressionNode->right.)
+    // освобождаем память для нод
+    free(ast);
+
     return 0;
 }

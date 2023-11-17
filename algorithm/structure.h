@@ -2,8 +2,9 @@
 #define ALGORITHM_STRUCTURE_H
 typedef enum type{
     OPERATOR,
-    CONSTANT,
-    VARIABLE
+    NUMBER,
+    VARIABLE,
+    FUNCTION
 } TokenType;
 typedef enum operation{
     PLUS,

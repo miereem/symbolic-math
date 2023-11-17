@@ -37,7 +37,7 @@ ExpressionNode *log_d(ExpressionNode *expressionNode) {
     ExpressionNode *mult = createOperation(MULTIPLICATION);
     mult->left= expressionNode->right;
 
-    expressionNode->left->type=CONSTANT;
+    expressionNode->left->type=NUMBER;
     expressionNode->left->operand=exp(1);
     mult->right=expressionNode;
 

@@ -7,10 +7,6 @@
 				{
 					"build" : ".",
 					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
-					"minimumCMakeVersion" : 
-					{
-						"string" : "3.26"
-					},
 					"projectIndex" : 0,
 					"source" : ".",
 					"targetIndexes" : 
@@ -39,7 +35,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "untitled1::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-untitled1-Debug-547de0936cdadb4316c8.json",
+					"jsonFile" : "target-untitled1-Debug-71889c1d392eb80b5035.json",
 					"name" : "untitled1",
 					"projectIndex" : 0
 				}
