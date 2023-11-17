@@ -17,12 +17,11 @@ ExpressionNode *makeCopy(ExpressionNode * expressionNode) {
     ExpressionNode *newExpressionNode = (ExpressionNode *) malloc(sizeof(ExpressionNode));
     *newExpressionNode=*expressionNode;
     switch (expressionNode->operationType) {
-
-        case PLUS|MINUS|MULTIPLICATION|DIVISION|POWER:
+        case PLUS: case MINUS:case MULTIPLICATION:case DIVISION:case POWER:
             newExpressionNode->left= makeCopy(newExpressionNode->left);
             newExpressionNode->right= makeCopy(newExpressionNode->right);
             break;
-        case SIN|COS|TAN|CTAN|POWER|LOGARITHM|NUMBER:
+        case SIN:case COS:case TAN:case CTAN:case LOGARITHM:
             newExpressionNode->left= makeCopy(newExpressionNode->left);
             break;
     }
