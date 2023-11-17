@@ -63,6 +63,7 @@ struct ExpressionNode* parseExpression();
 
 //выводим приорите нод в нотации
 void printPrefix();
+void printInfix();
 //
 //int main() {
 //    const char *input = "((3+c)*a)-7";

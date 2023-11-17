@@ -7,7 +7,7 @@ int main() {
     struct ExpressionNode *ast = parseExpression(&input, 0);
 
     printf("Prefix Notation: ");
-    printPrefix(ast);
+    printInfix(ast);
     printf("\n");
 
 

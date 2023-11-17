@@ -66,17 +66,17 @@ OperationType defineSimpleOperationType(const char name) {
 }
 
 OperationType defineOperationType(const char *name) {
-    if (strcmp(name, "sin") != 0) {
+    if (strcmp(name, "sin")) {
         return SIN;
-    } else if (strcmp(name, "cos") != 0) {
+    } else if (strcmp(name, "cos")) {
         return COS;
-    } else if (strcmp(name, "pow") != 0) {
+    } else if (strcmp(name, "pow")) {
         return POWER;
-    } else if (strcmp(name, "tan") != 0) {
+    } else if (strcmp(name, "tan")) {
         return TAN;
-    } else if (strcmp(name, "ctan") != 0) {
+    } else if (strcmp(name, "ctan")) {
         return CTAN;
-    } else if (strcmp(name, "log") != 0) {
+    } else if (strcmp(name, "log")) {
         return LOGARITHM;
     }
 
@@ -218,6 +218,67 @@ void printPrefix(struct ExpressionNode *node) {
         }
         printPrefix(node->left);
         printPrefix(node->right);
+    }
+}
+
+static inline char *stringFromEnum(OperationType o)
+{
+    static const char *strings[] = { "+",
+                                     "-","*",
+                                     "/","sin(",
+                                     "cos(","tan(",
+                                     "ctan(","asin(",
+                                     "acos(","atan(",
+                                     "arctan(","pow(",
+                                     "log(","-("};
+
+    return strings[o];
+}
+
+//PLUS,
+//MINUS,
+//MULTIPLICATION,
+//DIVISION,
+//SIN,
+//COS,
+//TAN,
+//CTAN,
+//POWER,
+//LOGARITHM,
+//NEGATIVE
+
+void printInfix(struct ExpressionNode *node) {
+    if (node) {
+        if (node->type == OPERATOR || node->type == FUNCTION) {
+            char *operation = stringFromEnum(node->operationType);
+            if (operation == "+") {
+                printInfix(node->left);
+                printf(" + ");
+                printInfix(node->right);
+            } else if (operation == "*") {
+                printInfix(node->left);
+                printf(" * ");
+                printInfix(node->right);
+            } else if (operation == "/") {
+                printInfix(node->left);
+                printf(" / ");
+                printInfix(node->right);
+            } else if (operation == "pow") {
+                printf("%s ", operation);
+                printInfix(node->left);
+                printf(", ");
+                printInfix(node->right);
+                printf(")");
+            } else {
+                printf("%s ", operation);
+                printInfix(node->left);
+                printf(")");
+            }
+        }else if (node->type == NUMBER) {
+            printf("%d ", node->operand);
+        } else if (node->type == VARIABLE) {
+            printf("%c ", node->variable);
+        }
     }
 }
 //
