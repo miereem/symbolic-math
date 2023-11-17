@@ -83,4 +83,5 @@ CMakeFiles/untitled1.dir/tree/parser.c.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/_ctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/runetype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_wint_t.h \
-  /Users/home/Desktop/symbolic-math/tree/parser.h
+  /Users/home/Desktop/symbolic-math/tree/parser.h \
+  /Users/home/Desktop/symbolic-math/tree/../algorithm/structure.h

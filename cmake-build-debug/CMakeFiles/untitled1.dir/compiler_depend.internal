@@ -81,6 +81,15 @@ CMakeFiles/untitled1.dir/main.c.o
  /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/malloc/_malloc.h
  /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_dev_t.h
  /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_mode_t.h
+ /Users/home/Desktop/symbolic-math/algorithm/structure.h
+ /Users/home/Desktop/symbolic-math/algorithm/derivative.h
+ /Users/home/Desktop/symbolic-math/algorithm/derivative.c
+ /Users/home/Desktop/symbolic-math/algorithm/derivative.h
+ /Users/home/Desktop/symbolic-math/algorithm/derivetive_operation.c
+ /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/math.h
+ /Users/home/Desktop/symbolic-math/algorithm/derivetive_operations.h
+ /Users/home/Desktop/symbolic-math/algorithm/creator.c
+ /Users/home/Desktop/symbolic-math/algorithm/creator.h
 
 CMakeFiles/untitled1.dir/tree/parser.c.o
  /Users/home/Desktop/symbolic-math/tree/parser.c
@@ -168,6 +177,7 @@ CMakeFiles/untitled1.dir/tree/parser.c.o
  /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/runetype.h
  /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_wint_t.h
  /Users/home/Desktop/symbolic-math/tree/parser.h
+ /Users/home/Desktop/symbolic-math/algorithm/structure.h
 
 CMakeFiles/untitled1.dir/tree/structure.c.o
  /Users/home/Desktop/symbolic-math/tree/structure.c

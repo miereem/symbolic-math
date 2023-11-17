@@ -79,7 +79,16 @@ CMakeFiles/untitled1.dir/main.c.o: /Users/home/Desktop/symbolic-math/main.c \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/alloca.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/malloc/_malloc.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_dev_t.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_mode_t.h
+  /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_mode_t.h \
+  /Users/home/Desktop/symbolic-math/algorithm/structure.h \
+  /Users/home/Desktop/symbolic-math/algorithm/derivative.h \
+  /Users/home/Desktop/symbolic-math/algorithm/derivative.c \
+  /Users/home/Desktop/symbolic-math/algorithm/derivative.h \
+  /Users/home/Desktop/symbolic-math/algorithm/derivetive_operation.c \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/math.h \
+  /Users/home/Desktop/symbolic-math/algorithm/derivetive_operations.h \
+  /Users/home/Desktop/symbolic-math/algorithm/creator.c \
+  /Users/home/Desktop/symbolic-math/algorithm/creator.h
 
 CMakeFiles/untitled1.dir/tree/parser.c.o: /Users/home/Desktop/symbolic-math/tree/parser.c \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/stdio.h \
@@ -165,7 +174,8 @@ CMakeFiles/untitled1.dir/tree/parser.c.o: /Users/home/Desktop/symbolic-math/tree
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/_ctype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/runetype.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_wint_t.h \
-  /Users/home/Desktop/symbolic-math/tree/parser.h
+  /Users/home/Desktop/symbolic-math/tree/parser.h \
+  /Users/home/Desktop/symbolic-math/algorithm/structure.h
 
 CMakeFiles/untitled1.dir/tree/structure.c.o: /Users/home/Desktop/symbolic-math/tree/structure.c \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/stdlib.h \
@@ -250,6 +260,14 @@ CMakeFiles/untitled1.dir/tree/structure.c.o: /Users/home/Desktop/symbolic-math/t
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_rsize_t.h:
 
+/Users/home/Desktop/symbolic-math/algorithm/creator.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/math.h:
+
+/Users/home/Desktop/symbolic-math/algorithm/derivative.h:
+
+/Users/home/Desktop/symbolic-math/algorithm/structure.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_dev_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_mode_t.h:
@@ -257,6 +275,8 @@ CMakeFiles/untitled1.dir/tree/structure.c.o: /Users/home/Desktop/symbolic-math/t
 /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/malloc/_malloc.h:
 
 /Users/home/Desktop/symbolic-math/tree/structure.h:
+
+/Users/home/Desktop/symbolic-math/algorithm/creator.c:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/libkern/i386/_OSByteOrder.h:
 
@@ -390,6 +410,8 @@ CMakeFiles/untitled1.dir/tree/structure.c.o: /Users/home/Desktop/symbolic-math/t
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types.h:
 
+/Users/home/Desktop/symbolic-math/algorithm/derivetive_operations.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/libkern/_OSByteOrder.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/i386/_types.h:
@@ -397,6 +419,8 @@ CMakeFiles/untitled1.dir/tree/structure.c.o: /Users/home/Desktop/symbolic-math/t
 /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/secure/_common.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_posix_availability.h:
+
+/Users/home/Desktop/symbolic-math/algorithm/derivetive_operation.c:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_u_int16_t.h:
 
@@ -411,6 +435,8 @@ CMakeFiles/untitled1.dir/tree/structure.c.o: /Users/home/Desktop/symbolic-math/t
 /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_symbol_aliasing.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/_stdio.h:
+
+/Users/home/Desktop/symbolic-math/algorithm/derivative.c:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/machine/signal.h:
 

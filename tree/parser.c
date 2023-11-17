@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "parser.h"
+#include "../algorithm/structure.h"
 
 
 typedef struct ExpressionNode ExpressionNode;
@@ -66,17 +67,17 @@ OperationType defineSimpleOperationType(const char name) {
 }
 
 OperationType defineOperationType(const char *name) {
-    if (strcmp(name, "sin")) {
+    if (!strcmp(name, "sin")) {
         return SIN;
-    } else if (strcmp(name, "cos")) {
+    } else if (!strcmp(name, "cos")) {
         return COS;
-    } else if (strcmp(name, "pow")) {
+    } else if (!strcmp(name, "pow")) {
         return POWER;
-    } else if (strcmp(name, "tan")) {
+    } else if (!strcmp(name, "tan")) {
         return TAN;
-    } else if (strcmp(name, "ctan")) {
+    } else if (!strcmp(name, "ctan")) {
         return CTAN;
-    } else if (strcmp(name, "log")) {
+    } else if (!strcmp(name, "log")) {
         return LOGARITHM;
     }
 
@@ -133,7 +134,7 @@ char parseVariable(const char **expr) {
 
 // Создаем ноду
 
-struct ExpressionNode *createNode(enum TokenType type, int operand, char variable, char op, OperationType operationType,
+struct ExpressionNode *createNode(TokenType type, int operand, char variable, char op, OperationType operationType,
                                   struct ExpressionNode *left,
                                   struct ExpressionNode *right) {
     struct ExpressionNode *node = (struct ExpressionNode *) malloc(sizeof(struct ExpressionNode));
@@ -224,12 +225,12 @@ void printPrefix(struct ExpressionNode *node) {
 static inline char *stringFromEnum(OperationType o)
 {
     static const char *strings[] = { "+",
-                                     "-","*",
-                                     "/","sin(",
-                                     "cos(","tan(",
-                                     "ctan(","asin(",
-                                     "acos(","atan(",
-                                     "arctan(","pow(",
+                                     "-",
+                                     "*",
+                                     "/",
+                                     "sin(",
+                                     "cos(","tan(","ctan(",
+                                     "pow(",
                                      "log(","-("};
 
     return strings[o];
@@ -251,6 +252,11 @@ void printInfix(struct ExpressionNode *node) {
     if (node) {
         if (node->type == OPERATOR || node->type == FUNCTION) {
             char *operation = stringFromEnum(node->operationType);
+            if (operation == "-") {
+                printInfix(node->left);
+                printf(" - ");
+                printInfix(node->right);
+            } else
             if (operation == "+") {
                 printInfix(node->left);
                 printf(" + ");
@@ -263,7 +269,7 @@ void printInfix(struct ExpressionNode *node) {
                 printInfix(node->left);
                 printf(" / ");
                 printInfix(node->right);
-            } else if (operation == "pow") {
+            } else if (operation == "pow(") {
                 printf("%s ", operation);
                 printInfix(node->left);
                 printf(", ");
@@ -275,7 +281,7 @@ void printInfix(struct ExpressionNode *node) {
                 printf(")");
             }
         }else if (node->type == NUMBER) {
-            printf("%d ", node->operand);
+            printf("%.1f", node->operand);
         } else if (node->type == VARIABLE) {
             printf("%c ", node->variable);
         }

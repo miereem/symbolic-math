@@ -1,40 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-enum TokenType {
-    NUMBER,
-    OPERATOR,
-    VARIABLE,
-    FUNCTION
-};
-typedef enum operation{
-    PLUS,
-    MINUS,
-    MULTIPLICATION,
-    DIVISION,
-    SIN,
-    COS,
-    TAN,
-    CTAN,
-    POWER,
-    LOGARITHM,
-    NEGATIVE
-} OperationType;
-
-
-struct ExpressionNode {
-    enum TokenType type;
-    // можно будет если нужно добавить тип операции пока хз зач
-    union {
-        int operand;        //  NUMBER nodes
-        char variable; // VARIABLE
-        char op;       //  OPERATOR nodes
-        char* function;
-    };
-    OperationType operationType;
-    struct ExpressionNode *left;
-    struct ExpressionNode *right;
-};
+#include "../algorithm/structure.h"
 
 int parseNumber(const char **expr);
 char parseOperator(const char **expr);
@@ -53,8 +19,8 @@ char parseVariable();
 
 
 // Создаем ноду
-struct ExpressionNode* createNode(enum TokenType type, int operand, char variable, char op, OperationType operationType, struct ExpressionNode *left, struct ExpressionNode *right);
-
+struct ExpressionNode* createNode(TokenType type, int operand, char variable, char op, OperationType operationType, struct ExpressionNode *left, struct ExpressionNode *right);
+void printInfix(struct ExpressionNode *node);
 // Parse a primary expression (number or expression in parentheses)
 struct ExpressionNode* parsePrimary();
 
@@ -63,7 +29,6 @@ struct ExpressionNode* parseExpression();
 
 //выводим приорите нод в нотации
 void printPrefix();
-void printInfix();
 //
 //int main() {
 //    const char *input = "((3+c)*a)-7";

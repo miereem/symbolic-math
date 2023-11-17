@@ -57,6 +57,22 @@ build CMakeFiles/untitled1.dir/main.c.obj: C_COMPILER__untitled1_unscanned_Debug
   TARGET_COMPILE_PDB = CMakeFiles\untitled1.dir\
   TARGET_PDB = untitled1.pdb
 
+build CMakeFiles/untitled1.dir/tree/structure.c.obj: C_COMPILER__untitled1_unscanned_Debug C$:/Users/yfcni/CLionProjects/LLP2/tree/structure.c || cmake_object_order_depends_target_untitled1
+  DEP_FILE = CMakeFiles\untitled1.dir\tree\structure.c.obj.d
+  FLAGS = -g -std=gnu11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\untitled1.dir
+  OBJECT_FILE_DIR = CMakeFiles\untitled1.dir\tree
+  TARGET_COMPILE_PDB = CMakeFiles\untitled1.dir\
+  TARGET_PDB = untitled1.pdb
+
+build CMakeFiles/untitled1.dir/tree/parser.c.obj: C_COMPILER__untitled1_unscanned_Debug C$:/Users/yfcni/CLionProjects/LLP2/tree/parser.c || cmake_object_order_depends_target_untitled1
+  DEP_FILE = CMakeFiles\untitled1.dir\tree\parser.c.obj.d
+  FLAGS = -g -std=gnu11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\untitled1.dir
+  OBJECT_FILE_DIR = CMakeFiles\untitled1.dir\tree
+  TARGET_COMPILE_PDB = CMakeFiles\untitled1.dir\
+  TARGET_PDB = untitled1.pdb
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target untitled1
@@ -65,7 +81,7 @@ build CMakeFiles/untitled1.dir/main.c.obj: C_COMPILER__untitled1_unscanned_Debug
 #############################################
 # Link the executable untitled1.exe
 
-build untitled1.exe: C_EXECUTABLE_LINKER__untitled1_Debug CMakeFiles/untitled1.dir/main.c.obj
+build untitled1.exe: C_EXECUTABLE_LINKER__untitled1_Debug CMakeFiles/untitled1.dir/main.c.obj CMakeFiles/untitled1.dir/tree/structure.c.obj CMakeFiles/untitled1.dir/tree/parser.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\untitled1.dir
@@ -113,6 +129,11 @@ build untitled1: phony untitled1.exe
 # Folder: C:/Users/yfcni/CLionProjects/LLP2/cmake-build-debug
 
 build all: phony untitled1.exe
+
+# =============================================================================
+# Unknown Build Time Dependencies.
+# Tell Ninja that they may appear as side effects of build rules
+# otherwise ordered by order-only dependencies.
 
 # =============================================================================
 # Built-in targets

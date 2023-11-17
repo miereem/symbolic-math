@@ -10,7 +10,7 @@ ExpressionNode* createOperandNode(TokenType type, double value) {
     }
 
     node->type = type;
-    if (type == CONSTANT) {
+    if (type == NUMBER) {
         node->value.constant = value;
     } else  if (type == VARIABLE) {
         node->value.variable = value;
@@ -54,8 +54,8 @@ void freeExpressionTree(ExpressionNode* root) {
 //
 //        ExpressionNode* operatorNode = createOperatorNode(());
 //    } else if (expressionNode.type == VARIABLE) {
-//        ExpressionNode* operand1 = createOperandNode(CONSTANT, 3.0);
-//    } else if (expressionNode.type == CONSTANT) {
+//        ExpressionNode* operand1 = createOperandNode(NUMBER, 3.0);
+//    } else if (expressionNode.type == NUMBER) {
 //
 //    } else {
 //        fprintf(stderr, "Error: Unrecognized token\n");
@@ -63,11 +63,11 @@ void freeExpressionTree(ExpressionNode* root) {
 //    }
 //    ExpressionNode* operatorNode = createOperatorNode(ADD);
 //
-//    ExpressionNode* operand1 = createOperandNode(CONSTANT, 3.0);
+//    ExpressionNode* operand1 = createOperandNode(NUMBER, 3.0);
 //    if (operand2->type == OPERATOR) {
 //        ExpressionNode* operand2 = createExpressionTree(operator);
 //    } else {
-//        ExpressionNode* operand2 = createOperandNode(CONSTANT, 4.0);
+//        ExpressionNode* operand2 = createOperandNode(NUMBER, 4.0);
 //    }
 //
 //

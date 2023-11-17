@@ -5,7 +5,7 @@
 typedef enum {
     OPERATOR,
     VARIABLE,
-    CONSTANT
+    NUMBER
 } TokenType;
 
 typedef enum {
