@@ -219,30 +219,37 @@ void printPrefix(struct ExpressionNode *node) {
 
 static inline char *stringFromEnum(OperationType o)
 {
-    static const char *strings[] = { "+",
-                                     "-",
-                                     "*",
-                                     "/",
-                                     "sin(",
-                                     "cos(","tan(","ctan(",
-                                     "pow(",
-                                     "log(","-("};
-
-    return strings[o];
-} // привести к канонической форме
- // integration
-
-//PLUS,
-//MINUS,
-//MULTIPLICATION,
-//DIVISION,
-//SIN,
-//COS,
-//TAN,
-//CTAN,
-//POWER,
-//LOGARITHM,
-//NEGATIVE
+    switch (o) {
+        case PLUS:
+            return "+";
+        case MINUS:
+            return "-";
+        case MULTIPLICATION:
+            return "*";
+        case DIVISION:
+            return "/";
+        case SIN:
+            return "sin(";
+        case COS:
+            return "cos(";
+        case TAN:
+            return "tan(";
+        case CTAN:
+            return "ctan(";
+        case POWER:
+            return "pow(";
+        case LOGARITHM:
+            return "log(";
+        case NEGATIVE:
+            return "-(";
+        case MODULE:
+            return "mod(";
+        case ATAN:
+            return "atan(";
+        case ASIN:
+            return "asin(";
+    }
+}
 
 void printInfix(struct ExpressionNode *node) {
     if (node) {

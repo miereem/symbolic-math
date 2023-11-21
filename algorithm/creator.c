@@ -13,6 +13,12 @@ ExpressionNode *createConst(double constant) {
     expressionNode->operand = constant;
     return expressionNode;
 }
+ExpressionNode *createVariable(char var) {
+    ExpressionNode *expressionNode = (ExpressionNode *) malloc(sizeof(ExpressionNode));
+    expressionNode->type = VARIABLE;
+    expressionNode->op = var;
+    return expressionNode;
+}
 ExpressionNode *makeCopy(ExpressionNode * expressionNode) {
     ExpressionNode *newExpressionNode = (ExpressionNode *) malloc(sizeof(ExpressionNode));
     *newExpressionNode=*expressionNode;

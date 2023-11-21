@@ -1,14 +1,16 @@
 #include <stdio.h>
 #include <ctype.h>
 #include "tree/parser.h"
-#include "algorithm/derivative.h"
-#include "algorithm/derivative.c"
+#include "algorithm/derivative/derivative.h"
+#include "algorithm/integral/integral.h"
 
 int main() {
-    const char *input = "cos((pow(x,2)+1))";
+    const char *input = "1/(pow(x,2)+pow(a,2))";
     struct ExpressionNode *ast = parseExpression(&input, 0);
-    struct ExpressionNode * der= derivateExpression(ast);
-    printInfix(der);
+//    struct ExpressionNode * der= derivateExpression(ast);
+    struct ExpressionNode * integral= make_integral(ast);
+//    printInfix(der);
+    printInfix(integral);
     printf("\n");
 
     free(ast);

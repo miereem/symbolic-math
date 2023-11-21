@@ -21,7 +21,10 @@ typedef enum operation{
     CTAN,
     POWER,
     LOGARITHM,
-    NEGATIVE
+    NEGATIVE,
+    MODULE,
+    ATAN,
+    ASIN
 } OperationType;
 
 typedef struct ExpressionNode{
@@ -30,7 +33,7 @@ typedef struct ExpressionNode{
         double operand;
         char variable;
         char op;
-        char* function
+        char* function;
     };
     OperationType operationType;
     struct ExpressionNode* left;

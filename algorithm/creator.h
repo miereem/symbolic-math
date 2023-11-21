@@ -8,5 +8,6 @@ ExpressionNode *createOperation(OperationType operationType);
 ExpressionNode *makeCopy(ExpressionNode *expressionNode);
 
 ExpressionNode *createConst(double constant);
+ExpressionNode *createVariable(char var);
 
 #endif //LLP2_CREATOR_H
