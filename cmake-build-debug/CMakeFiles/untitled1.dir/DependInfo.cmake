@@ -10,7 +10,6 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/home/Desktop/symbolic-math/main.c" "CMakeFiles/untitled1.dir/main.c.o" "gcc" "CMakeFiles/untitled1.dir/main.c.o.d"
   "/Users/home/Desktop/symbolic-math/tree/parser.c" "CMakeFiles/untitled1.dir/tree/parser.c.o" "gcc" "CMakeFiles/untitled1.dir/tree/parser.c.o.d"
-  "/Users/home/Desktop/symbolic-math/tree/structure.c" "CMakeFiles/untitled1.dir/tree/structure.c.o" "gcc" "CMakeFiles/untitled1.dir/tree/structure.c.o.d"
   )
 
 # Targets to which this target links.

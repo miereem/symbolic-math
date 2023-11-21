@@ -3,12 +3,11 @@
 #include <string.h>
 #include <ctype.h>
 #include "parser.h"
-#include "../algorithm/structure.h"
+#include "../structureMain.h"
 
 
 typedef struct ExpressionNode ExpressionNode;
 
-// Определяем приоритет
 int getPrecedence(char op) {
     switch (op) {
         case '+':
@@ -22,7 +21,7 @@ int getPrecedence(char op) {
     }
 }
 
-// строим число из его цифр ( типо распрастранненый метод)
+
 int parseNumber(const char **expr) {
     int result = 0;
     while (**expr >= '0' && **expr <= '9') {
@@ -36,7 +35,6 @@ int parseNumber(const char **expr) {
 OperationType defineOperationType(const char *name);
 
 struct ExpressionNode *createFunctionNode(const char *functionName) {
-    printf("%c ", *functionName);
 
     int len = strlen(functionName);
     struct ExpressionNode *node = (ExpressionNode *) malloc(sizeof(ExpressionNode));
@@ -85,7 +83,6 @@ OperationType defineOperationType(const char *name) {
 }
 
 struct ExpressionNode *parseFunction(const char **expr) {
-    printf("%c ", **expr);
     char functionName[50];
     sscanf(*expr, "%49[^ (]", functionName); // Read until the first space or opening parenthesis
     *expr += strlen(functionName);
@@ -101,14 +98,12 @@ struct ExpressionNode *parseFunction(const char **expr) {
         if (**expr == ',') {
             (*expr)++;
         }
-        printf("%s ", *expr);
         functionNode->right = parsePrimary(expr);      //const char *input = "7+sin(cos(x)-7)";
 
 
         if (**expr == ')') {
             (*expr)++;
         } else {
-            printf("%c ", **expr);
             fprintf(stderr, "Error: Mismatched parentheses\n");
             exit(EXIT_FAILURE);
         }
@@ -234,7 +229,8 @@ static inline char *stringFromEnum(OperationType o)
                                      "log(","-("};
 
     return strings[o];
-}
+} // привести к канонической форме
+ // integration
 
 //PLUS,
 //MINUS,
@@ -287,18 +283,3 @@ void printInfix(struct ExpressionNode *node) {
         }
     }
 }
-//
-//int main() {
-//    const char *input = "((3+c)*a)-7";
-//    struct ExpressionNode *ast = parseExpression(&input, 0);
-//
-//    printf("Postfix Notation: ");
-//    printPostfix(ast);
-//    printf("\n");
-//
-//
-//    // освобождаем память для нод
-//    free(ast);
-//
-//    return 0;
-//}

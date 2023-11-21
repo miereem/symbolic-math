@@ -1,6 +1,6 @@
 #ifndef LLP2_DERIVETIVE_OPERATIONS_H
 #define LLP2_DERIVETIVE_OPERATIONS_H
-#include "structure.h"
+#include "../structureMain.h"
 ExpressionNode * sin_d(ExpressionNode* expressionNode);
 ExpressionNode *cos_d(ExpressionNode *expressionNode);
 ExpressionNode *createOperation(OperationType operationType);

@@ -73,4 +73,4 @@ CMakeFiles/untitled1.dir/tree/structure.c.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_ssize_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/secure/_stdio.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/secure/_common.h \
-  /Users/home/Desktop/symbolic-math/tree/structure.h
+  /Users/home/Desktop/symbolic-math/tree/../structureMain.h

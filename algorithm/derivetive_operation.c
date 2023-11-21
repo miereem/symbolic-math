@@ -1,4 +1,3 @@
-#include "structure.h"
 #include <math.h>
 #include "derivetive_operations.h"
 

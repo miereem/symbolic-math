@@ -78,12 +78,11 @@ CMakeFiles/untitled1.dir/main.c.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/malloc/_malloc.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_dev_t.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/sys/_types/_mode_t.h \
-  /Users/home/Desktop/symbolic-math/tree/../algorithm/structure.h \
   /Users/home/Desktop/symbolic-math/algorithm/derivative.h \
+  /Users/home/Desktop/symbolic-math/algorithm/../structureMain.h \
   /Users/home/Desktop/symbolic-math/algorithm/derivative.c \
-  /Users/home/Desktop/symbolic-math/tree/../algorithm/derivative.h \
-  /Users/home/Desktop/symbolic-math/tree/../algorithm/derivetive_operation.c \
+  /Users/home/Desktop/symbolic-math/algorithm/derivetive_operation.c \
   /Library/Developer/CommandLineTools/SDKs/MacOSX12.1.sdk/usr/include/math.h \
-  /Users/home/Desktop/symbolic-math/tree/../algorithm/derivetive_operations.h \
-  /Users/home/Desktop/symbolic-math/tree/../algorithm/creator.c \
-  /Users/home/Desktop/symbolic-math/tree/../algorithm/creator.h
+  /Users/home/Desktop/symbolic-math/algorithm/derivetive_operations.h \
+  /Users/home/Desktop/symbolic-math/algorithm/creator.c \
+  /Users/home/Desktop/symbolic-math/algorithm/creator.h

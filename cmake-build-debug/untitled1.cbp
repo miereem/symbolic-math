@@ -81,16 +81,13 @@
 		<Unit filename="/Users/home/Desktop/symbolic-math/main.c">
 			<Option target="untitled1"/>
 		</Unit>
+		<Unit filename="/Users/home/Desktop/symbolic-math/structureMain.h">
+			<Option target="untitled1"/>
+		</Unit>
 		<Unit filename="/Users/home/Desktop/symbolic-math/tree/parser.c">
 			<Option target="untitled1"/>
 		</Unit>
 		<Unit filename="/Users/home/Desktop/symbolic-math/tree/parser.h">
-			<Option target="untitled1"/>
-		</Unit>
-		<Unit filename="/Users/home/Desktop/symbolic-math/tree/structure.c">
-			<Option target="untitled1"/>
-		</Unit>
-		<Unit filename="/Users/home/Desktop/symbolic-math/tree/structure.h">
 			<Option target="untitled1"/>
 		</Unit>
 		<Unit filename="/Users/home/Desktop/symbolic-math/CMakeLists.txt">

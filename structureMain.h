@@ -1,5 +1,9 @@
-#ifndef ALGORITHM_STRUCTURE_H
-#define ALGORITHM_STRUCTURE_H
+//
+// Created by Home on 17.11.2023.
+//
+
+#ifndef UNTITLED1_STRUCTUREMAIN_H
+#define UNTITLED1_STRUCTUREMAIN_H
 typedef enum type{
     OPERATOR,
     NUMBER,
@@ -32,5 +36,4 @@ typedef struct ExpressionNode{
     struct ExpressionNode* left;
     struct ExpressionNode* right;
 } ExpressionNode;
-
-#endif //ALGORITHM_STRUCTURE_H
+#endif //UNTITLED1_STRUCTUREMAIN_H

@@ -177,30 +177,6 @@ tree/parser.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/untitled1.dir/build.make CMakeFiles/untitled1.dir/tree/parser.c.s
 .PHONY : tree/parser.c.s
 
-tree/structure.o: tree/structure.c.o
-.PHONY : tree/structure.o
-
-# target to build an object file
-tree/structure.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/untitled1.dir/build.make CMakeFiles/untitled1.dir/tree/structure.c.o
-.PHONY : tree/structure.c.o
-
-tree/structure.i: tree/structure.c.i
-.PHONY : tree/structure.i
-
-# target to preprocess a source file
-tree/structure.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/untitled1.dir/build.make CMakeFiles/untitled1.dir/tree/structure.c.i
-.PHONY : tree/structure.c.i
-
-tree/structure.s: tree/structure.c.s
-.PHONY : tree/structure.s
-
-# target to generate assembly for a file
-tree/structure.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/untitled1.dir/build.make CMakeFiles/untitled1.dir/tree/structure.c.s
-.PHONY : tree/structure.c.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -216,9 +192,6 @@ help:
 	@echo "... tree/parser.o"
 	@echo "... tree/parser.i"
 	@echo "... tree/parser.s"
-	@echo "... tree/structure.o"
-	@echo "... tree/structure.i"
-	@echo "... tree/structure.s"
 .PHONY : help
 
 

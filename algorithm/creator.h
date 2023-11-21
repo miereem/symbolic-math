@@ -1,7 +1,7 @@
 #ifndef LLP2_CREATOR_H
 #define LLP2_CREATOR_H
 
-#include "structure.h"
+#include "../structureMain.h"
 
 ExpressionNode *createOperation(OperationType operationType);
 
