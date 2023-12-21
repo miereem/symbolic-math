@@ -1,3 +1,0 @@
-C:/Users/yfcni/CLionProjects/symbolic-math/cmake-build-debug/CMakeFiles/symbolic.dir
-C:/Users/yfcni/CLionProjects/symbolic-math/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/yfcni/CLionProjects/symbolic-math/cmake-build-debug/CMakeFiles/rebuild_cache.dir
