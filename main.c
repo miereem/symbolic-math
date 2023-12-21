@@ -10,7 +10,7 @@ int main() {
     // solve(&input);
 
     initContext();
-    printTree(sum( parseExpression(&input)));
+    set( parseExpression(&input));
     set( parseExpression(&input2));
 
 //    printf(&(root->children->symbol));

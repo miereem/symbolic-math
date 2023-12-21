@@ -7,10 +7,14 @@
 
 #include <corecrt.h>
 #include "structures.h"
+struct DefinitionArray{
+    Expression * definitionArray;
+    size_t size;
+} typedef DefinitionArray;
 struct Context {
     size_t numNames;
     char **names;
-    Expression ** definitions;
+    DefinitionArray * definitions;
 };
 void set(struct Expression* node);
 void initContext();
