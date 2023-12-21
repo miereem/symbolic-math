@@ -40,7 +40,7 @@ void printTree(Expression *root)
 
     printf("%s ", root->symbol);
 
-    for (int i = 0; i < root->numChildren + 1; i++)
+    for (int i = 0; i < root->numChildren; i++)
     {
         printTree(&(root->children[i]));
     }

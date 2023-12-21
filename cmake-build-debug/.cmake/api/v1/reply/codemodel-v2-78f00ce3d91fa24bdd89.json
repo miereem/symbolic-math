@@ -6,7 +6,7 @@
 			[
 				{
 					"build" : ".",
-					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.24"
@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "symbolic::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-symbolic-Debug-ba0201f5a58d2860122e.json",
+					"jsonFile" : "target-symbolic-Debug-da54044b5bac64ee3886.json",
 					"name" : "symbolic",
 					"projectIndex" : 0
 				}
@@ -49,12 +49,12 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/Users/home/Desktop/school/symbolic/cmake-build-debug",
-		"source" : "/Users/home/Desktop/school/symbolic"
+		"build" : "C:/Users/yfcni/CLionProjects/symbolic-math/cmake-build-debug",
+		"source" : "C:/Users/yfcni/CLionProjects/symbolic-math"
 	},
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 4
+		"minor" : 5
 	}
 }

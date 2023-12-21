@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "structures.c"
 
-struct Context
-{
+struct Context {
     size_t numNames;
     char **names;
     char **definitions;
@@ -15,14 +15,12 @@ static struct Context context = {
         .numNames = 0,
 };
 
-void initContext()
-{
+void initContext() {
     context.names = malloc(100 * sizeof(char *));
     context.definitions = malloc(100 * sizeof(char *));
 }
 
-void set(char *expr)
-{
+void set(char *expr) {
     char name[100];
     char trans[100];
     printf("%s ", expr);
@@ -34,12 +32,9 @@ void set(char *expr)
 
     printf("%s ", context.names[context.numNames]);
 
-    if (context.names[context.numNames] != NULL)
-    {
+    if (context.names[context.numNames] != NULL) {
         context.numNames++;
-    }
-    else
-    {
+    } else {
         printf("Memory allocation error\n");
     }
 }
@@ -118,34 +113,82 @@ void set(char *expr)
 //     }
 // }
 
+void substring(char *s, char *sub, int p, int l) {
+    int c = 0;
 
-struct Expression *parseExpression(char **expr)
-{
+    while (c < l) {
+        *(sub + c) = *(s + (p + c));  // Corrected the loop condition
+        c++;
+    }
+    sub[c] = '\0';
+}
+
+bool isChild(char s, int d) {
+    if (s == ',' && d == 0 || s == '\0') {
+        return false;
+    }
+    return true;
+}
+
+struct Expression *parseExpression(char **expr) {
     char name[50] = {};
-
     printf("%c ", **expr);
 
-    if (sscanf(*expr, "%49[^],[]", name) != 1) { // Error here
+    if (sscanf(*expr, "%49[^[]", name) != 1) { // Error here
         return NULL;
     }
-
-    (*expr) += strlen(name);
-    Expression *node = createNode(name);
-    (*expr)++;
-
-    while (**expr != ',' && **expr != ']')
-    {
-        addChild(node, parseExpression(expr));
+    char *subString = malloc(strlen(*expr) - strlen(name) - 2);
+    // Check if memory allocation is successful
+    if (subString == NULL) {
+        // Handle allocation failure
+        return createNode(*expr);
     }
+    substring(*expr, subString, strlen(name) + 1, strlen(*expr) - 2 - strlen(name));
 
+    Expression *node = createNode(name);
+//    free(**expr);
 
-//    if (**expr == ',')
-//    {
-//        (*expr)++;
-//    }
-//    if (**expr == '\0' || **expr == ' ' ||  **expr == ';') {
-//        return node;
-//    }
+    for (int i = 0; i < strlen(subString); i++) {
+        int d = 0;
+
+        char symbol;
+        int index = 0;
+        size_t bufferSize = 10;
+        char *child = (char *) malloc(bufferSize * sizeof(char));
+
+        while (isChild(symbol = subString[i], d)) {
+            if (symbol == '[') d++;
+            if (symbol == ']') d--;
+
+            // Check if the buffer is full and resize if necessary
+            if (index == bufferSize - 1) {
+                bufferSize *= 2;  // Double the buffer size
+                child = realloc(child, bufferSize * sizeof(char));
+
+                if (child == NULL) {
+                    fprintf(stderr, "Memory reallocation error\n");
+                    return NULL;  // Exit with an error code
+                }
+            }
+
+            child[index++] = symbol;
+            i++;
+        }
+        if (index == bufferSize - 1) {
+            bufferSize *= 2;  // Double the buffer size
+            child = realloc(child, bufferSize * sizeof(char));
+
+            if (child == NULL) {
+                fprintf(stderr, "Memory reallocation error\n");
+                return NULL;  // Exit with an error code
+            }
+        }
+
+        child[index++] = '\0';
+        size_t l = strlen(child);
+
+        addChild(node, parseExpression(&child));
+    }
 
     return node;
 }
