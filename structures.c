@@ -1,24 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-// typedef enum type
-// {
-//     CONSTANT,
-//     SYMBOL,
-//     FUNCTION
-// } TokenType;
-
-typedef struct Expression
-{
-    char *symbol;
-    struct Expression *children;
-    int numChildren;
-} Expression;
+#include <string.h>
+#include "structures.h"
 
 Expression *createNode(char *symbol)
 {
     Expression *newNode = (Expression *)malloc(sizeof(Expression));
-    newNode->symbol = symbol;
+    newNode->symbol = strdup(symbol);
     newNode->children = NULL;
     newNode->numChildren = 0;
     return newNode;
