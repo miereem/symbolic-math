@@ -1,18 +1,34 @@
 #include <stdio.h>
-#include "parser.c"
+#include "parser.h"
+#include "transformer.h"
+#include "evaluator.h"
 
 int main() {
-    char *input = "set[2,5]";
-    // solve(&input);
+    char *input = "set[k[n_],sum[n,1]]";
+    char *input2 = "set[f[n_,m_],mul[sum[n,n],m]]";
+    char *input3 = "set[f[p_],sum[p,9]]";
+    char *input4 = "k[8]";
 
-    struct Expression* root = parseExpression(&input);
 
-//    printf(&(root->children->symbol));
-//    printf(((Expression*)(root->children+sizeof(Expression))->symbol));
-//    printf("Tree: ");
-//    printf("\n");
-    printTree(root);
+    initContext();
+
+    Expression *e = parseInput(&input);
+    Expression *a = parseInput(&input4);
+    Expression *b = parseInput(&input3);
+    Expression *c = parseInput(&input2);
+
+
+    printTree(evaluate(b));
+    printTree(evaluate(e));
+
     printf("\n");
+    printTree(evaluate(c));
+
+    printf("\n");
+    printContext();
+
+    Expression *d = evaluate(a);
+    printTree(evaluateExpression(d));
 
 
 

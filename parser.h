@@ -4,5 +4,5 @@
 
 #ifndef SYMBOLIC_PARSER_H
 #define SYMBOLIC_PARSER_H
-
+struct Expression *parseInput(char **expr);
 #endif //SYMBOLIC_PARSER_H

@@ -1,13 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// typedef enum type
-// {
-//     CONSTANT,
-//     SYMBOL,
-//     FUNCTION
-// } TokenType;
-
 typedef struct Expression
 {
     char *symbol;
@@ -18,7 +11,7 @@ typedef struct Expression
 Expression *createNode(char *symbol)
 {
     Expression *newNode = (Expression *)malloc(sizeof(Expression));
-    newNode->symbol = symbol;
+    newNode->symbol = strdup(symbol);
     newNode->children = NULL;
     newNode->numChildren = 0;
     return newNode;
@@ -46,6 +39,20 @@ void printTree(Expression *root)
     }
 }
 
+Expression *copyNode(Expression *node) {
+    if (node == NULL) {
+        return NULL;
+    }
+
+    Expression *copy = createNode(node->symbol);
+
+    for (int i = 0; i < node->numChildren; i++) {
+        Expression *childCopy = copyNode(&node->children[i]);
+        addChild(copy, childCopy);
+    }
+
+    return copy;
+}
 // void freeTree(Expression *root)
 // {
 //     if (root == NULL)
@@ -62,6 +69,3 @@ void printTree(Expression *root)
 //     free(root);
 // }
 
-// symbol and object
-
-// List, Pattern, Set, SetDelayed,
