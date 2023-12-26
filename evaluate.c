@@ -1,7 +1,6 @@
 
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <ctype.h>
 #include "structures.h"
 

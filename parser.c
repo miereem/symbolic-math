@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "structures.c"
+#include "util.h"
 
 
 void substring(char *s, char *sub, int p, int l) {

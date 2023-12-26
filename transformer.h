@@ -1,23 +1,11 @@
 
 #ifndef SYMBOLIC_TRANSFORM_H
 #define SYMBOLIC_TRANSFORM_H
-
-//#include <corecrt.h>
-#include "structures.h"
-
-struct DefinitionArray {
-    Expression *definitionArray;
-    size_t size;
-} typedef DefinitionArray;
-struct Context {
-    size_t numNames;
-    char **names;
-    DefinitionArray *definitions;
-};
+#include "util.h"
 
 void printContext();
 
-void set(struct Expression *node);
+void set(struct Expression *node, bool isDelayed);
 
 void initContext();
 
@@ -28,5 +16,6 @@ Expression *evaluate(Expression *expression);
 Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree);
 
 Expression *evaluateExpression(Expression *node);
+void addAttrs(char* name, enum Hold attr);
 
 #endif //SYMBOLIC_TRANSFORM_H

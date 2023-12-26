@@ -1,12 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-typedef struct Expression
-{
-    char *symbol;
-    struct Expression *children;
-    int numChildren;
-} Expression;
+#include <string.h>
+#include "structures.h"
 
 Expression *createNode(char *symbol)
 {

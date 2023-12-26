@@ -6,7 +6,7 @@
 int main() {
     char *input = "set[k[n_],sum[n,1]]";
     char *input2 = "set[f[n_,m_],mul[sum[n,n],m]]";
-    char *input3 = "set[f[p_],sum[p,9]]";
+    char *input3 = "setDelayed[f[p_],sum[p,9]]";
     char *input4 = "k[8]";
 
 
@@ -25,6 +25,7 @@ int main() {
     printTree(evaluate(c));
 
     printf("\n");
+    addAttrs("k", ALL);
     printContext();
 
     Expression *d = evaluate(a);

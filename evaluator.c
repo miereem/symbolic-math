@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
-#include "structures.h"
+#include "util.h"
 #include "transformer.h"
 
 struct Expression *sum(struct Expression *node) {
