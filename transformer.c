@@ -91,6 +91,20 @@ void set(struct Expression *node) {
     return;
 }
 
+int expressionsEqual(Expression *expr1, Expression *expr2) {
+    if (strcmp(expr1->symbol, expr2->symbol) != 0 || expr1->numChildren != expr2->numChildren) {
+        return 0;
+    }
+
+    for (int i = 0; i < expr1->numChildren; i++) {
+        if (!expressionsEqual(&expr1->children[i], &expr2->children[i])) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 
 Expression *findDefinition(DefinitionArray array, Expression *node) {
     // if (node->numChildren > 0 && node->children[0].numChildren > 0) {
@@ -100,7 +114,8 @@ Expression *findDefinition(DefinitionArray array, Expression *node) {
             return &array.definitionArray[i];
         }
     }
-    return &array.definitionArray[0]; //здесь либо хэндл либо return node;
+   // return &array.definitionArray[0]; //здесь либо хэндл либо return node;
+   return node;
 }
 
 
@@ -113,6 +128,9 @@ Expression *replaceUnknowns(Expression *node) {
         if (strcmp(node->symbol, context.names[i]) == 0) {
             Expression *setTree = findDefinition(context.definitions[i], node);
             //check if the returned node != sent node
+            if(expressionsEqual(setTree, node)) {
+                return node;
+            }
             return compareAndAddToContext(node, setTree);
         }
     }
@@ -180,19 +198,6 @@ Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree) {
 }
 
 
-int expressionsEqual(Expression *expr1, Expression *expr2) {
-    if (strcmp(expr1->symbol, expr2->symbol) != 0 || expr1->numChildren != expr2->numChildren) {
-        return 0;
-    }
-
-    for (int i = 0; i < expr1->numChildren; i++) {
-        if (!expressionsEqual(&expr1->children[i], &expr2->children[i])) {
-            return 0;
-        }
-    }
-
-    return 1;
-}
 
 
 Expression *evaluate(Expression *expression) {
