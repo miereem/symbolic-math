@@ -4,10 +4,10 @@
 #include "evaluator.h"
 
 int main() {
-    char *input = "set[k,1]";
+    char *input = "set[f[5],1]";
     char *input2 = "set[f[n_,m_],mul[sum[n,n],m]]";
     char *input3 = "set[f[p_],sum[p,9]]";
-    char *input4 = "f[5,1,7]";
+    char *input4 = "f[51]";
 
 
     initContext();
@@ -17,9 +17,9 @@ int main() {
     Expression *b = parseInput(&input3);
     Expression *c = parseInput(&input2);
 
+    printTree(evaluate(e));
 
     printTree(evaluate(b));
-    printTree(evaluate(e));
 
     printf("\n");
     printTree(evaluate(c));

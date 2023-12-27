@@ -105,17 +105,30 @@ int expressionsEqual(Expression *expr1, Expression *expr2) {
     return 1;
 }
 
+int argumentsMatch(Expression *definition, Expression *node) {
+    for(size_t i = 0; i < definition->numChildren; i++) {
+        printf("%s %s\n", node->children[i].symbol, definition->children[i].symbol);
+        if (strcmp(node->children[i].symbol, definition->children[i].symbol) != 0 && strcmp(definition->children[i].symbol, "Pattern") != 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 Expression *findDefinition(DefinitionArray array, Expression *node) {
     // if (node->numChildren > 0 && node->children[0].numChildren > 0) {
     int argNum = node->numChildren;
     for (int i = 0; i < array.size; i++) {
         if (array.definitionArray[i].children[0].numChildren == argNum) {
-            return &array.definitionArray[i];
+            if(argumentsMatch(&array.definitionArray[i].children[0], node) == 0) {
+                return &array.definitionArray[i];
+            } //здесь нужен какой-то дефолт, который возвращают // типа от паттерна всегда последний должен стоять или можно в нуле всегда держать, то есть при сете видим все аргументы паттерны засовываем в нулевого ребенка
         }
     }
    // return &array.definitionArray[0]; //здесь либо хэндл либо return node;
    return node;
+    //add compare arguments not only number of arguments
+    //first search equal arguments and if not found search for k[pattern[]] = cash
 }
 
 
@@ -200,9 +213,9 @@ Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree) {
 
 
 
-Expression *evaluate(Expression *expression) {
-    // Expression *result = expression;
-    Expression *prevResult = NULL;
+Expression *evaluate(Expression *expression) { //нужно добавить что-то на подобии истории инпута, иначе не понять, что добавлять в контекст
+    // Expression *result = expression; можно создавать ноду новую, где первый ребенок это полученный инпут, а последующие это все этапы эволюции
+    Expression *prevResult = NULL; // при этом чтобы добавить его в контекст придется искать ту ноду в которой форма func[num] и добавлять в контекст, ведь есть истории func[func[num]]
 
     while (prevResult == NULL || strcmp(expression->symbol, prevResult->symbol) != 0) {
         if (prevResult != NULL) {
