@@ -4,7 +4,7 @@
 
 //#include <corecrt.h>
 #include "structures.h"
-
+#include <stdio.h>
 struct DefinitionArray {
     Expression *definitionArray;
     size_t size;
@@ -28,5 +28,6 @@ Expression *evaluate(Expression *expression);
 Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree);
 
 Expression *evaluateExpression(Expression *node);
+void printExpression(Expression *node);
 
 #endif //SYMBOLIC_TRANSFORM_H

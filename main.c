@@ -1,34 +1,22 @@
-#include <stdio.h>
-#include "parser.h"
+#include "solver.h"
 #include "transformer.h"
-#include "evaluator.h"
 
 int main() {
     char *input = "set[f[5],1]";
     char *input2 = "set[f[n_,m_],mul[sum[n,n],m]]";
     char *input3 = "set[f[p_],sum[p,9]]";
-    char *input4 = "f[51]";
+    char *input4 = "sum[hold[f[20]],6]";
+    char *input5 = "set[f[20],6]";
+    char *input6 = "mul[f[20],6]";
 
 
     initContext();
 
-    Expression *e = parseInput(&input);
-    Expression *a = parseInput(&input4);
-    Expression *b = parseInput(&input3);
-    Expression *c = parseInput(&input2);
-
-    printTree(evaluate(e));
-
-    printTree(evaluate(b));
-
-    printf("\n");
-    printTree(evaluate(c));
-
-    printf("\n");
-    printContext();
-
-    Expression *d = evaluate(a);
-    printTree(evaluateExpression(d));
+    solve(&input);
+    solve(&input3);
+    solve(&input5);
+    solve(&input4);
+    solve(&input6);
 
 
 

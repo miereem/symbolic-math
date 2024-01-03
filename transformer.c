@@ -53,6 +53,19 @@ void printLocalContext(struct Context context) {
     }
 }
 
+int isDefaultDefinition(Expression *expression) {
+    int cnt = 0;
+    for (size_t i = 0; i < expression->numChildren; i++) {
+        if (strcmp(expression->children[i].symbol, "Pattern") == 0) {
+            cnt++;
+        }
+    }
+    if (cnt == expression->numChildren) {
+        return 1;
+    }
+    return 0;
+}
+
 void addDefinition(int index, Expression *expression, bool isNew) {
     if (isNew) {
         context.definitions = realloc(context.definitions, context.numNames * sizeof(DefinitionArray));
@@ -70,7 +83,16 @@ void addDefinition(int index, Expression *expression, bool isNew) {
         fprintf(stderr, "Memory reallocation error\n");
         return;
     }
-    context.definitions[index].definitionArray[context.definitions[index].size - 1] = *expression;
+    //printf("context size: %d\n", context.definitions[index].size);
+    if (isDefaultDefinition(&expression->children[0])) {
+        context.definitions[index].definitionArray[context.definitions[index].size - 1] = *expression;
+
+    } else if (context.definitions->size > 1) {
+        context.definitions[index].definitionArray[context.definitions[index].size -
+                                                   1] = context.definitions[index].definitionArray[
+                context.definitions[index].size - 2];
+        context.definitions[index].definitionArray[context.definitions[index].size - 2] = *expression;
+    }
 }
 
 int addName(char *symbol) {
@@ -105,12 +127,19 @@ int expressionsEqual(Expression *expr1, Expression *expr2) {
     return 1;
 }
 
-int argumentsMatch(Expression *definition, Expression *node) {
-    for(size_t i = 0; i < definition->numChildren; i++) {
-        printf("%s %s\n", node->children[i].symbol, definition->children[i].symbol);
-        if (strcmp(node->children[i].symbol, definition->children[i].symbol) != 0 && strcmp(definition->children[i].symbol, "Pattern") != 0) {
-            return 1;
+int argumentsMatch(Expression *definition, Expression *node) { //0 - arguments match ,  1 - default, 2 - has no definition
+    int cnt = 0;
+    for (size_t i = 0; i < definition->numChildren; i++) {
+        if (strcmp(node->children[i].symbol, definition->children[i].symbol) != 0 &&
+            strcmp(definition->children[i].symbol, "Pattern") != 0) {
+            return 2;
         }
+        if (strcmp(definition->children[i].symbol, "Pattern") == 0) {
+            cnt++;
+        }
+    }
+    if (cnt == definition->numChildren) {
+        return 1;
     }
     return 0;
 }
@@ -118,16 +147,23 @@ int argumentsMatch(Expression *definition, Expression *node) {
 Expression *findDefinition(DefinitionArray array, Expression *node) {
     // if (node->numChildren > 0 && node->children[0].numChildren > 0) {
     int argNum = node->numChildren;
+    Expression *defaultDefinition = NULL;
     for (int i = 0; i < array.size; i++) {
-        if (array.definitionArray[i].children[0].numChildren == argNum) {
-            if(argumentsMatch(&array.definitionArray[i].children[0], node) == 0) {
-                return &array.definitionArray[i];
-            } //здесь нужен какой-то дефолт, который возвращают // типа от паттерна всегда последний должен стоять или можно в нуле всегда держать, то есть при сете видим все аргументы паттерны засовываем в нулевого ребенка
+        if (array.definitionArray[i].numChildren > 0) {
+            if (array.definitionArray[i].children[0].numChildren == argNum) {
+                if (argumentsMatch(&array.definitionArray[i].children[0], node) == 0) {
+                    return &array.definitionArray[i];
+                }
+                if (argumentsMatch(&array.definitionArray[i].children[0], node) == 1) {
+                    defaultDefinition = &array.definitionArray[i];
+                }
+            }
         }
     }
-   // return &array.definitionArray[0]; //здесь либо хэндл либо return node;
-   return node;
-    //add compare arguments not only number of arguments
+    if (defaultDefinition != NULL) {
+        return defaultDefinition;
+    }
+    return node;
     //first search equal arguments and if not found search for k[pattern[]] = cash
 }
 
@@ -137,11 +173,14 @@ Expression *replaceUnknowns(Expression *node) {
         set(node);
         return node;
     }
+    if (strcmp(node->symbol, "hold") == 0) {
+        return node;
+    }
     for (size_t i = 0; i < context.numNames; i++) {
         if (strcmp(node->symbol, context.names[i]) == 0) {
             Expression *setTree = findDefinition(context.definitions[i], node);
-            //check if the returned node != sent node
-            if(expressionsEqual(setTree, node)) {
+
+            if (expressionsEqual(setTree, node)) {
                 return node;
             }
             return compareAndAddToContext(node, setTree);
@@ -162,7 +201,6 @@ Expression *replacePatterns(Expression *node, struct Context *localContext) {
             return &localContext->definitions[i].definitionArray[0];
         }
     }
-
     for (int i = 0; i < node->numChildren; i++) {
         definedExpression->children[i] = *replacePatterns(&node->children[i], localContext);
     }
@@ -211,9 +249,8 @@ Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree) {
 }
 
 
-
-
-Expression *evaluate(Expression *expression) { //нужно добавить что-то на подобии истории инпута, иначе не понять, что добавлять в контекст
+Expression *evaluate(
+        Expression *expression) { //нужно добавить что-то на подобии истории инпута, иначе не понять, что добавлять в контекст
     // Expression *result = expression; можно создавать ноду новую, где первый ребенок это полученный инпут, а последующие это все этапы эволюции
     Expression *prevResult = NULL; // при этом чтобы добавить его в контекст придется искать ту ноду в которой форма func[num] и добавлять в контекст, ведь есть истории func[func[num]]
 
@@ -228,8 +265,7 @@ Expression *evaluate(Expression *expression) { //нужно добавить ч�
         *prevResult = *expression;
 
         expression = replaceUnknowns(expression);
-        printExpression(expression);
-        printf("\n");
+       // printExpression(expression);
     }
     return expression;
 }
@@ -282,7 +318,7 @@ Expression *evaluateExpression(Expression *node) {
 }
 
 void printContext() {
-    printf("Context:\n");
+    printf("\nContext:\n");
 
     for (size_t i = 0; i < context.numNames; i++) {
         for (size_t j = 0; j < context.definitions[i].size; j++) {
