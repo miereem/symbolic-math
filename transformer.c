@@ -92,16 +92,7 @@ void addDefinition(int index, Expression *expression, bool isNew) {
         fprintf(stderr, "Memory reallocation error\n");
         return;
     }
-    //printf("context size: %d\n", context.definitions[index].size);
-    if (isDefaultDefinition(&expression->children[0])) {
-        context.definitions[index].definitionArray[context.definitions[index].size - 1] = *expression;
-
-    } else if (context.definitions->size > 1) {
-        context.definitions[index].definitionArray[context.definitions[index].size -
-                                                   1] = context.definitions[index].definitionArray[
-                context.definitions[index].size - 2];
-        context.definitions[index].definitionArray[context.definitions[index].size - 2] = *expression;
-    }
+    context.definitions[index].definitionArray[context.definitions[index].size - 1] = *expression;
 }
 
 int addName(char *symbol) {
