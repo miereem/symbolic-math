@@ -1,8 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <printf.h>
+
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "transformer.h"
 #include "evaluator.h"
@@ -27,6 +28,11 @@ int isInContext(char *name) {
 
 void printExpression(Expression *node) {
     printf("%s", node->symbol);
+    if(node->isDelayed){
+        printf("%s", " delayed");
+    } else{
+        printf("%s", " not delayed");
+    }
 
     if (node->numChildren > 0) {
         printf("[");
@@ -74,6 +80,7 @@ void addDefinition(int index, Expression *expression, bool isNew) {
             return;
         }
         context.definitions[index].size = 0;
+        context.definitions[index].countOfAttrs = 0;
         context.definitions[index].definitionArray = malloc(sizeof(Expression));
     }
     context.definitions[index].size++;
@@ -101,9 +108,17 @@ int addName(char *symbol) {
     context.names[context.numNames - 1] = strdup(symbol);
     return context.numNames - 1;
 }
-
-void set(struct Expression *node) {
+void addAttrs(char* name, enum Hold attr){
     int index;
+    if((index = isInContext(name))!=-1){
+        context.definitions[index].countOfAttrs+=1;
+        context.definitions[index].attrs= realloc(context.definitions[index].attrs, sizeof (enum Hold)*context.definitions[index].countOfAttrs);
+        context.definitions[index].attrs[context.definitions[index].countOfAttrs-1]=attr;
+    }
+}
+void set(struct Expression *node, bool isDelayed) {
+    int index;
+    node->isDelayed=isDelayed;
     if ((index = isInContext(node->children[0].symbol)) == -1) {
         index = addName(node->children[0].symbol);
         addDefinition(index, node, true);
@@ -170,7 +185,11 @@ Expression *findDefinition(DefinitionArray array, Expression *node) {
 
 Expression *replaceUnknowns(Expression *node) {
     if (strcmp(node->symbol, "set") == 0) {
-        set(node);
+        set(node, false);
+        return node;
+    }
+    if (strcmp(node->symbol, "setDelayed") == 0) {
+        set(node, true);
         return node;
     }
     if (strcmp(node->symbol, "hold") == 0) {
@@ -324,6 +343,11 @@ void printContext() {
         for (size_t j = 0; j < context.definitions[i].size; j++) {
             printf("%s := ", context.names[i]);
             printExpression(&context.definitions[i].definitionArray[j]);
+            printf("\n");
+        }
+        printf("Attributes:\n");
+        for (size_t j = 0; j < context.definitions[i].countOfAttrs; j++) {
+            printf("%d",context.definitions[i].attrs[i]);
             printf("\n");
         }
         printf("\n");

@@ -1,3 +1,0 @@
-/Users/home/Desktop/school/symbolic/cmake-build-debug/CMakeFiles/symbolic.dir
-/Users/home/Desktop/school/symbolic/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/home/Desktop/school/symbolic/cmake-build-debug/CMakeFiles/rebuild_cache.dir
