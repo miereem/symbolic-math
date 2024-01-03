@@ -7,6 +7,8 @@
 
 #include "transformer.h"
 #include "evaluator.h"
+#include "util.h"
+
 
 static struct Context context = {
         .numNames = 0,

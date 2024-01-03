@@ -5,7 +5,9 @@
 #ifndef SYMBOLIC_STRUCTURES_H
 #define SYMBOLIC_STRUCTURES_H
 #include <stdbool.h>
-#include <corecrt.h>
+#include <stdio.h>
+
+//#include <corecrt.h>
 
 typedef struct Expression {
     char *symbol;

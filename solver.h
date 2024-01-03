@@ -4,5 +4,5 @@
 
 #ifndef SYMBOLIC_SOLVER_H
 #define SYMBOLIC_SOLVER_H
-void solve(char *input);
+void solve(char **input);
 #endif //SYMBOLIC_SOLVER_H

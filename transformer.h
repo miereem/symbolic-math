@@ -5,19 +5,10 @@
 //#include <corecrt.h>
 #include "structures.h"
 #include <stdio.h>
-struct DefinitionArray {
-    Expression *definitionArray;
-    size_t size;
-} typedef DefinitionArray;
-struct Context {
-    size_t numNames;
-    char **names;
-    DefinitionArray *definitions;
-};
 
 void printContext();
 
-void set(struct Expression *node);
+void set(struct Expression *node, bool isDelayed);
 
 void initContext();
 
@@ -29,5 +20,6 @@ Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree);
 
 Expression *evaluateExpression(Expression *node);
 void printExpression(Expression *node);
+void addAttrs(char* name, enum Hold attr);
 
 #endif //SYMBOLIC_TRANSFORM_H
