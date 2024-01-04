@@ -8,6 +8,7 @@
 #include "transformer.h"
 #include "evaluator.h"
 #include "util.h"
+#include "solver.h"
 
 
 static struct Context context = {
@@ -30,11 +31,11 @@ int isInContext(char *name) {
 
 void printExpression(Expression *node) {
     printf("%s", node->symbol);
-    if(node->isDelayed){
-        printf("%s", " delayed");
-    } else{
-        printf("%s", " not delayed");
-    }
+//    if(node->isDelayed){
+//        printf("%s", " delayed");
+//    } else{
+//        printf("%s", " not delayed");
+//    }
 
     if (node->numChildren > 0) {
         printf("[");
@@ -111,11 +112,13 @@ void addAttrs(char* name, enum Hold attr){
 }
 void set(struct Expression *node, bool isDelayed) {
     int index;
-    node->isDelayed=isDelayed;
+    node->isDelayed = isDelayed;
+    if (isDelayed == false) {
+        node->children[1] = *copyNode(evaluateExpression(evaluate(&node->children[1])));
+    }
     if ((index = isInContext(node->children[0].symbol)) == -1) {
         index = addName(node->children[0].symbol);
         addDefinition(index, node, true);
-        return;
     }
     addDefinition(index, node, false);
     return;
@@ -169,10 +172,10 @@ Expression *findDefinition(DefinitionArray array, Expression *node) {
         }
     }
     if (defaultDefinition != NULL) {
+        // save node
         return defaultDefinition;
     }
     return node;
-    //first search equal arguments and if not found search for k[pattern[]] = cash
 }
 
 
@@ -228,6 +231,13 @@ Expression *replaceRightChild(Expression *node, struct Context *localContext) {
     return definedExpression;
 }
 
+void cacheExpression(Expression node, Expression *setTree) {
+    Expression definition = *copyNode(evaluateExpression(evaluate(setTree)));
+    Expression *expr = createNode("set");
+    addChild(expr,&node);
+    addChild(expr,&definition);
+    set(expr,false);
+}
 
 Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree) {
     struct Context localContext;
@@ -255,29 +265,30 @@ Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree) {
         }
     }
 
+    cacheExpression(*inputTree, evaluateExpression(replaceRightChild(rightNode, &localContext)));
+
     return replaceRightChild(rightNode, &localContext);
+
 
 
 }
 
 
 Expression *evaluate(
-        Expression *expression) { //нужно добавить что-то на подобии истории инпута, иначе не понять, что добавлять в контекст
-    // Expression *result = expression; можно создавать ноду новую, где первый ребенок это полученный инпут, а последующие это все этапы эволюции
-    Expression *prevResult = NULL; // при этом чтобы добавить его в контекст придется искать ту ноду в которой форма func[num] и добавлять в контекст, ведь есть истории func[func[num]]
-
-    while (prevResult == NULL || strcmp(expression->symbol, prevResult->symbol) != 0) {
-        if (prevResult != NULL) {
-            free(prevResult->children);
-            free(prevResult);
-        }
+        Expression *expression) {
+    Expression *prevResult = NULL;
+    while (prevResult == NULL || expressionsEqual(expression, prevResult)  == 0) {
+//        if (prevResult != NULL) {
+//            free(prevResult->children);
+//            free(prevResult);
+//        }
 
 
         prevResult = (Expression *) malloc(sizeof(Expression));
-        *prevResult = *expression;
+        *prevResult = *copyNode(expression);
 
         expression = replaceUnknowns(expression);
-       // printExpression(expression);
+
     }
     return expression;
 }

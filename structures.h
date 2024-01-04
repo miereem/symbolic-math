@@ -16,15 +16,17 @@ typedef struct Expression {
     bool isDelayed;
 } Expression;
 
-enum Hold{
+enum Hold {
     ALL, FIRST, REST
 };
+
 struct DefinitionArray{
     Expression * definitionArray;
     size_t size;
     enum Hold* attrs;
     size_t countOfAttrs;
 } typedef DefinitionArray;
+
 struct Context {
     size_t numNames;
     char **names;
