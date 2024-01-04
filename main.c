@@ -8,7 +8,6 @@ int main() {
     char *input4 = "sum[hold[f[20]],6]";
     char *input5 = "set[f[20],6]";
     char *input6 = "sum[f[20],f[5],f[7],f[9]]";
-//sum[sum[sum[sum[sum[k[5],9],9],9], 9], 6]
 
     initContext();
 

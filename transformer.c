@@ -89,32 +89,6 @@ void addAttrs(char* name, enum Hold attr){
         context.definitions[index].attrs[context.definitions[index].countOfAttrs-1]=attr;
     }
 }
-void set(struct Expression *node, bool isDelayed) {
-    int index;
-    if (isDelayed == false) {
-        node->children[1] = *copyNode(evaluateExpression(evaluate(&node->children[1])));
-    }
-    if ((index = isInContext(node->children[0].symbol)) == -1) {
-        index = addName(node->children[0].symbol);
-        addDefinition(index, node, true);
-    }
-    addDefinition(index, node, false);
-    return;
-}
-
-int expressionsEqual(Expression *expr1, Expression *expr2) {
-    if (strcmp(expr1->symbol, expr2->symbol) != 0 || expr1->numChildren != expr2->numChildren) {
-        return 0;
-    }
-
-    for (int i = 0; i < expr1->numChildren; i++) {
-        if (!expressionsEqual(&expr1->children[i], &expr2->children[i])) {
-            return 0;
-        }
-    }
-
-    return 1;
-}
 
 int argumentsMatch(Expression *definition, Expression *node) { //0 - arguments match ,  1 - default, 2 - has no definition
     int cnt = 0;
@@ -134,7 +108,6 @@ int argumentsMatch(Expression *definition, Expression *node) { //0 - arguments m
 }
 
 Expression *findDefinition(DefinitionArray array, Expression *node) {
-    // if (node->numChildren > 0 && node->children[0].numChildren > 0) {
     int argNum = node->numChildren;
     Expression *defaultDefinition = NULL;
     for (int i = 0; i < array.size; i++) {
@@ -150,12 +123,40 @@ Expression *findDefinition(DefinitionArray array, Expression *node) {
         }
     }
     if (defaultDefinition != NULL) {
-        // save node
         return defaultDefinition;
     }
     return node;
 }
 
+int expressionsEqual(Expression *expr1, Expression *expr2) {
+    if (strcmp(expr1->symbol, expr2->symbol) != 0 || expr1->numChildren != expr2->numChildren) {
+        return 0;
+    }
+
+    for (int i = 0; i < expr1->numChildren; i++) {
+        if (!expressionsEqual(&expr1->children[i], &expr2->children[i])) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+void set(struct Expression *node, bool isDelayed) {
+    int index;
+    if (isDelayed == false) {
+        node->children[1] = *copyNode(evaluateExpression(evaluate(&node->children[1])));
+    }
+    if ((index = isInContext(node->children[0].symbol)) == -1) {
+        index = addName(node->children[0].symbol);
+        addDefinition(index, node, true);
+    } else {
+        if (!expressionsEqual(findDefinition(context.definitions[index], &node->children[0]), node)) {
+            addDefinition(index, node, false);
+        }
+    }
+    return;
+}
 
 Expression *replaceUnknowns(Expression *node) {
     if (strcmp(node->symbol, "set") == 0) {
