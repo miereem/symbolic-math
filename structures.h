@@ -13,7 +13,6 @@ typedef struct Expression {
     char *symbol;
     struct Expression *children;
     int numChildren;
-    bool isDelayed;
 } Expression;
 
 enum Hold {
