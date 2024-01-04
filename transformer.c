@@ -30,11 +30,6 @@ int isInContext(char *name) {
 
 void printExpression(Expression *node) {
     printf("%s", node->symbol);
-    if(node->isDelayed){
-        printf("%s", " delayed");
-    } else{
-        printf("%s", " not delayed");
-    }
 
     if (node->numChildren > 0) {
         printf("[");
@@ -111,7 +106,6 @@ void addAttrs(char* name, enum Hold attr){
 }
 void set(struct Expression *node, bool isDelayed) {
     int index;
-    node->isDelayed=isDelayed;
     if ((index = isInContext(node->children[0].symbol)) == -1) {
         index = addName(node->children[0].symbol);
         addDefinition(index, node, true);
