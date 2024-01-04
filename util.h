@@ -8,7 +8,6 @@
 
 #include "structures.h"
 
-void printTree(Expression *root);
 
 void addChild(Expression *parent, Expression *child);
 

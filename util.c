@@ -12,26 +12,13 @@ Expression *createNode(char *symbol)
     return newNode;
 }
 
+
+
 void addChild(Expression *parent, Expression *child)
 {
     parent->numChildren++;
     parent->children = (Expression *)realloc(parent->children, parent->numChildren * sizeof(Expression));
     parent->children[parent->numChildren - 1] = *child;
-}
-
-void printTree(Expression *root)
-{
-    if (root == NULL)
-    {
-        return;
-    }
-
-    printf("%s ", root->symbol);
-
-    for (int i = 0; i < root->numChildren; i++)
-    {
-        printTree(&(root->children[i]));
-    }
 }
 
 Expression *copyNode(Expression *node) {
@@ -47,6 +34,20 @@ Expression *copyNode(Expression *node) {
     }
 
     return copy;
+}
+
+void printExpression(Expression *node) {
+    printf("%s", node->symbol);
+    if (node->numChildren > 0) {
+        printf("[");
+        for (int i = 0; i < node->numChildren; i++) {
+            printExpression(&node->children[i]);
+            if (i < node->numChildren - 1) {
+                printf(", ");
+            }
+        }
+        printf("]");
+    }
 }
 // void freeTree(Expression *root)
 // {

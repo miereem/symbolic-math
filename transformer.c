@@ -8,7 +8,6 @@
 #include "transformer.h"
 #include "evaluator.h"
 #include "util.h"
-#include "solver.h"
 
 
 static struct Context context = {
@@ -27,26 +26,6 @@ int isInContext(char *name) {
         }
     }
     return -1;
-}
-
-void printExpression(Expression *node) {
-    printf("%s", node->symbol);
-//    if(node->isDelayed){
-//        printf("%s", " delayed");
-//    } else{
-//        printf("%s", " not delayed");
-//    }
-
-    if (node->numChildren > 0) {
-        printf("[");
-        for (int i = 0; i < node->numChildren; i++) {
-            printExpression(&node->children[i]);
-            if (i < node->numChildren - 1) {
-                printf(", ");
-            }
-        }
-        printf("]");
-    }
 }
 
 void printLocalContext(struct Context context) {
@@ -112,7 +91,6 @@ void addAttrs(char* name, enum Hold attr){
 }
 void set(struct Expression *node, bool isDelayed) {
     int index;
-    node->isDelayed = isDelayed;
     if (isDelayed == false) {
         node->children[1] = *copyNode(evaluateExpression(evaluate(&node->children[1])));
     }
