@@ -9,15 +9,18 @@
 
 //#include <corecrt.h>
 
+enum Hold {
+    NONE, ALL, FIRST, REST
+};
+
 typedef struct Expression {
     char *symbol;
     struct Expression *children;
     int numChildren;
+    enum Hold hold;
 } Expression;
 
-enum Hold {
-    ALL, FIRST, REST
-};
+
 
 struct DefinitionArray{
     Expression * definitionArray;

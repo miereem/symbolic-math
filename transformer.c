@@ -91,6 +91,11 @@ void addAttrs(char* name, enum Hold attr){
             context.definitions[index].attrs= malloc(sizeof (enum Hold)*context.definitions[index].countOfAttrs);
 
         context.definitions[index].attrs[context.definitions[index].countOfAttrs-1]=attr;
+        for (int i = 0; i < context.definitions[index].size; i++) {
+            context.definitions[index].definitionArray[i].children[1].hold = attr;
+           // printf("mn %d ", context.definitions[index].definitionArray[i].hold);
+
+        }
     }
 }
 
@@ -112,12 +117,13 @@ int argumentsMatch(Expression *definition, Expression *node) { //0 - arguments m
 }
 
 Expression *findDefinition(DefinitionArray array, Expression *node) {
+//    printExpression(node);
     int argNum = node->numChildren;
     Expression *defaultDefinition = NULL;
     for (int i = 0; i < array.size; i++) {
         if (array.definitionArray[i].numChildren > 0) {
             if (array.definitionArray[i].children[0].numChildren == argNum) {
-                if (argumentsMatch(&array.definitionArray[i].children[0], node) == 0 && array.countOfAttrs == 0) {
+                if (argumentsMatch(&array.definitionArray[i].children[0], node) == 0 ) {
                     return &array.definitionArray[i];
                 }
                 if (argumentsMatch(&array.definitionArray[i].children[0], node) == 1) {
@@ -126,7 +132,7 @@ Expression *findDefinition(DefinitionArray array, Expression *node) {
             }
         }
     }
-    if (defaultDefinition != NULL && array.countOfAttrs == 0) {
+    if (defaultDefinition != NULL ) {
         return defaultDefinition;
     }
     return node;
@@ -147,6 +153,7 @@ int expressionsEqual(Expression *expr1, Expression *expr2) {
 }
 
 void set(struct Expression *node, bool isDelayed) {
+
     int index;
     if (isDelayed == false) {
         node->children[1] = *copyNode(evaluate(&node->children[1]));
@@ -192,11 +199,14 @@ Expression *replaceUnknowns(Expression *node) {
     }
     if (strcmp(node->symbol, "addAttrs") == 0) {
         enum Hold hold = 0;
-        if (strcmp(node->children[1].symbol, "holdFirst") == 0) {
+        if (strcmp(node->children[1].symbol, "holdAll") == 0) {
             hold = 1;
         }
-        if (strcmp(node->children[1].symbol, "holdRest") == 0) {
+        if (strcmp(node->children[1].symbol, "holdFirst") == 0) {
             hold = 2;
+        }
+        if (strcmp(node->children[1].symbol, "holdRest") == 0) {
+            hold = 3;
         }
         addAttrs(node->children[0].symbol, hold);
         return node;
@@ -211,9 +221,32 @@ Expression *replaceUnknowns(Expression *node) {
             return compareAndAddToContext(node, setTree);
         }
     }
-    for (int i = 0; i < node->numChildren; i++) {
-        node->children[i] = *replaceUnknowns(&node->children[i]);
+
+
+    if(node->hold == 0) {
+        for (int i = 0; i < node->numChildren; i++) {
+            node->children[i] = *replaceUnknowns(&node->children[i]);
+        }
     }
+    if(node->hold == 1) {
+        printf("1");
+        return node;
+    }
+    if(node->hold == 2) {
+        printf("2");
+
+        for (int i = 1; i < node->numChildren; i++) {
+            node->children[i] = *replaceUnknowns(&node->children[i]);
+        }
+    }
+    if(node->hold == 3) {
+        printf("3");
+        for (int i = 0; i < 2; i++) {
+            node->children[i] = *replaceUnknowns(&node->children[i]);
+        }
+    }
+
+
 
     if (isOperator(node->symbol)) {
         int allChildrenEvaluated = 1;
@@ -255,16 +288,20 @@ Expression *replacePatterns(Expression *node, struct Context *localContext) {
     for (int i = 0; i < node->numChildren; i++) {
         definedExpression->children[i] = *replacePatterns(&node->children[i], localContext);
     }
-
     return definedExpression;
 }
 
 Expression *replaceRightChild(Expression *node, struct Context *localContext) {
+
     Expression *definedExpression = copyNode(node);
     if (node->numChildren > 1) {
         definedExpression = replacePatterns(definedExpression, localContext);
     }
+//    printf("def ");
+//    printExpression(definedExpression);
+//    printf("%d ", definedExpression->hold);
     return definedExpression;
+
 }
 
 void cacheExpression(Expression node, Expression *setTree) {

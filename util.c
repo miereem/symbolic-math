@@ -27,6 +27,7 @@ Expression *copyNode(Expression *node) {
     }
 
     Expression *copy = createNode(node->symbol);
+    copy->hold = node->hold;
 
     for (int i = 0; i < node->numChildren; i++) {
         Expression *childCopy = copyNode(&node->children[i]);
