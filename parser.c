@@ -17,7 +17,7 @@ void substring(char *s, char *sub, int p, int l) {
 }
 
 bool isChild(char s, int d) {
-    if (s == ',' && d == 0 || s == '\0') {
+    if (s == ',' && d == 0 || s == '\0') { //why?
         return false;
     }
     return true;

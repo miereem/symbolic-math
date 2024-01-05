@@ -85,7 +85,11 @@ void addAttrs(char* name, enum Hold attr){
     int index;
     if((index = isInContext(name))!=-1){
         context.definitions[index].countOfAttrs+=1;
-        context.definitions[index].attrs= realloc(context.definitions[index].attrs, sizeof (enum Hold)*context.definitions[index].countOfAttrs);
+        if ( context.definitions[index].countOfAttrs > 1) {
+            context.definitions[index].attrs= realloc(context.definitions[index].attrs, sizeof (enum Hold)*context.definitions[index].countOfAttrs);
+        } else
+            context.definitions[index].attrs= malloc(sizeof (enum Hold)*context.definitions[index].countOfAttrs);
+
         context.definitions[index].attrs[context.definitions[index].countOfAttrs-1]=attr;
     }
 }
@@ -113,7 +117,7 @@ Expression *findDefinition(DefinitionArray array, Expression *node) {
     for (int i = 0; i < array.size; i++) {
         if (array.definitionArray[i].numChildren > 0) {
             if (array.definitionArray[i].children[0].numChildren == argNum) {
-                if (argumentsMatch(&array.definitionArray[i].children[0], node) == 0) {
+                if (argumentsMatch(&array.definitionArray[i].children[0], node) == 0 && array.countOfAttrs == 0) {
                     return &array.definitionArray[i];
                 }
                 if (argumentsMatch(&array.definitionArray[i].children[0], node) == 1) {
@@ -122,7 +126,7 @@ Expression *findDefinition(DefinitionArray array, Expression *node) {
             }
         }
     }
-    if (defaultDefinition != NULL) {
+    if (defaultDefinition != NULL && array.countOfAttrs == 0) {
         return defaultDefinition;
     }
     return node;
@@ -145,7 +149,7 @@ int expressionsEqual(Expression *expr1, Expression *expr2) {
 void set(struct Expression *node, bool isDelayed) {
     int index;
     if (isDelayed == false) {
-        node->children[1] = *copyNode(evaluateExpression(evaluate(&node->children[1])));
+        node->children[1] = *copyNode(evaluate(&node->children[1]));
     }
     if ((index = isInContext(node->children[0].symbol)) == -1) {
         index = addName(node->children[0].symbol);
@@ -158,7 +162,23 @@ void set(struct Expression *node, bool isDelayed) {
     return;
 }
 
+int isOperator(char *symbol) {
+    return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0;
+}
+
 Expression *replaceUnknowns(Expression *node) {
+//    printf("\nnode\n");
+//    printExpression(node);
+//    printf("\nnode\n");
+
+
+    if (node == NULL) {
+        return NULL;
+    }
+    if (node->numChildren == 0) {
+        return node;
+    }
+
     if (strcmp(node->symbol, "set") == 0) {
         set(node, false);
         return node;
@@ -168,6 +188,17 @@ Expression *replaceUnknowns(Expression *node) {
         return node;
     }
     if (strcmp(node->symbol, "hold") == 0) {
+        return node;
+    }
+    if (strcmp(node->symbol, "addAttrs") == 0) {
+        enum Hold hold = 0;
+        if (strcmp(node->children[1].symbol, "holdFirst") == 0) {
+            hold = 1;
+        }
+        if (strcmp(node->children[1].symbol, "holdRest") == 0) {
+            hold = 2;
+        }
+        addAttrs(node->children[0].symbol, hold);
         return node;
     }
     for (size_t i = 0; i < context.numNames; i++) {
@@ -182,6 +213,32 @@ Expression *replaceUnknowns(Expression *node) {
     }
     for (int i = 0; i < node->numChildren; i++) {
         node->children[i] = *replaceUnknowns(&node->children[i]);
+    }
+
+    if (isOperator(node->symbol)) {
+        int allChildrenEvaluated = 1;
+        for (int i = 0; i < node->numChildren; i++) {
+            if (isOperator(node->children[i].symbol)) {
+                allChildrenEvaluated = 0;
+                break;
+            }
+        }
+        if (allChildrenEvaluated) {
+            if (strcmp(node->symbol, "sum") == 0) {
+                Expression *res = sum(node);
+                free(node->children);
+                node->children = NULL;
+                node->numChildren = 0;
+                node = res;
+
+            } else if (strcmp(node->symbol, "mul") == 0) {
+                Expression *res = mul(node);
+                free(node->children);
+                node->children = NULL;
+                node->numChildren = 0;
+                node = res;
+            }
+        }
     }
     return node;
 
@@ -211,7 +268,7 @@ Expression *replaceRightChild(Expression *node, struct Context *localContext) {
 }
 
 void cacheExpression(Expression node, Expression *setTree) {
-    Expression definition = *copyNode(evaluateExpression(evaluate(setTree)));
+    Expression definition = *copyNode(evaluate(setTree));
     Expression *expr = createNode("set");
     addChild(expr,&node);
     addChild(expr,&definition);
@@ -244,7 +301,9 @@ Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree) {
         }
     }
 
-    cacheExpression(*inputTree, evaluateExpression(replaceRightChild(rightNode, &localContext)));
+
+
+    //cacheExpression(*inputTree, replaceUnknowns(replaceRightChild(rightNode, &localContext)));
 
     return replaceRightChild(rightNode, &localContext);
 
@@ -257,67 +316,27 @@ Expression *evaluate(
         Expression *expression) {
     Expression *prevResult = NULL;
     while (prevResult == NULL || expressionsEqual(expression, prevResult)  == 0) {
-//        if (prevResult != NULL) {
-//            free(prevResult->children);
-//            free(prevResult);
-//        }
+        if (prevResult != NULL) {
+            free(prevResult->children);
+            free(prevResult);
+        }
 
 
         prevResult = (Expression *) malloc(sizeof(Expression));
         *prevResult = *copyNode(expression);
 
         expression = replaceUnknowns(expression);
+//        printExpression(prevResult);
+//        printf("  ");
+//        printExpression(expression);
+//        printf("\n");
 
     }
     return expression;
 }
 
-int isOperator(char *symbol) {
-    return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0;
-}
 
-Expression *evaluateExpression(Expression *node) {
-    if (node == NULL) {
-        return NULL;
-    }
 
-    if (node->numChildren == 0) {
-        return createNode(node->symbol);
-    }
-
-    for (int i = 0; i < node->numChildren; i++) {
-        node->children[i] = *evaluateExpression(&node->children[i]);
-    }
-
-    if (isOperator(node->symbol)) {
-        int allChildrenEvaluated = 1;
-        for (int i = 0; i < node->numChildren; i++) {
-            if (isOperator(node->children[i].symbol)) {
-                allChildrenEvaluated = 0;
-                break;
-            }
-        }
-
-        if (allChildrenEvaluated) {
-            if (strcmp(node->symbol, "sum") == 0) {
-                Expression *res = sum(node);
-                free(node->children);
-                node->children = NULL;
-                node->numChildren = 0;
-                node = res;
-
-            } else if (strcmp(node->symbol, "mul") == 0) {
-                Expression *res = mul(node);
-                free(node->children);
-                node->children = NULL;
-                node->numChildren = 0;
-                node = res;
-            }
-        }
-    }
-
-    return node;
-}
 
 void printContext() {
     printf("\nContext:\n");
