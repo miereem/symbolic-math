@@ -5,21 +5,20 @@
 #include "transformer.h"
 
 struct Expression *sum(struct Expression *node) {
-    int sum = 0;
+    double sum = 0;
+    double current;
     struct Expression *res = createNode(node->symbol);
     if (node->numChildren > 0) {
         for (int i = 0; i < node->numChildren; i++) {
-            if (isdigit(node->children[i].symbol[0])) {
-                sum += atoi(node->children[i].symbol);
+            if ((current=atof(node->children[i].symbol))!=0) {
+                sum += current;
             } else {
                 addChild(res, &node->children[i]);
             }
         }
     }
-    size_t size = sizeof(sum);
-    char symbol[size];
-    sprintf(symbol, "%d", sum);
-    // itoa(sum, symbol[size], 10);
+    char symbol[sizeof(sum)];
+    snprintf(symbol, sizeof(symbol), "%g", sum);
     if (res->numChildren == 0) {
         return createNode(symbol);
     } else {
@@ -27,6 +26,7 @@ struct Expression *sum(struct Expression *node) {
     }
     return res;
 }
+
 
 struct Expression *mul(struct Expression *node) {
     int mul = 1;

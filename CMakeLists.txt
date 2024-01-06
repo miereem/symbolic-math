@@ -4,5 +4,6 @@ project(symbolic C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(symbolic main.c transformer.c evaluator.c transformer.h structures.h parser.h evaluator.h parser.c solver.h solver.c util.h util.c)
+add_executable(symbolic main.c transformer.c evaluator.c transformer.h structures.h parser.h evaluator.h parser.c solver.h solver.c util.h util.c
+        main.c)
 #structures.c parser.c
