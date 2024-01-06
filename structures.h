@@ -25,8 +25,6 @@ typedef struct Expression {
 struct DefinitionArray{
     Expression * definitionArray;
     size_t size;
-    enum Hold* attrs;
-    size_t countOfAttrs;
 } typedef DefinitionArray;
 
 struct Context {

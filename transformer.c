@@ -62,7 +62,6 @@ void addDefinition(int index, Expression *expression, bool isNew) {
             return;
         }
         context.definitions[index].size = 0;
-        context.definitions[index].countOfAttrs = 0;
         context.definitions[index].definitionArray = malloc(sizeof(Expression));
     }
     context.definitions[index].size++;
@@ -81,25 +80,21 @@ int addName(char *symbol) {
     context.names[context.numNames - 1] = strdup(symbol);
     return context.numNames - 1;
 }
-void addAttrs(char* name, enum Hold attr){
-    int index;
-    if((index = isInContext(name))!=-1){
-        context.definitions[index].countOfAttrs+=1;
-        if ( context.definitions[index].countOfAttrs > 1) {
-            context.definitions[index].attrs= realloc(context.definitions[index].attrs, sizeof (enum Hold)*context.definitions[index].countOfAttrs);
-        } else
-            context.definitions[index].attrs= malloc(sizeof (enum Hold)*context.definitions[index].countOfAttrs);
 
-        context.definitions[index].attrs[context.definitions[index].countOfAttrs-1]=attr;
+void addAttrs(char *name, enum Hold attr) {
+    int index;
+    if ((index = isInContext(name)) != -1) {
+
         for (int i = 0; i < context.definitions[index].size; i++) {
             context.definitions[index].definitionArray[i].children[1].hold = attr;
-           // printf("mn %d ", context.definitions[index].definitionArray[i].hold);
+            // printf("mn %d ", context.definitions[index].definitionArray[i].hold);
 
         }
     }
 }
 
-int argumentsMatch(Expression *definition, Expression *node) { //0 - arguments match ,  1 - default, 2 - has no definition
+int
+argumentsMatch(Expression *definition, Expression *node) { //0 - arguments match ,  1 - default, 2 - has no definition
     int cnt = 0;
     for (size_t i = 0; i < definition->numChildren; i++) {
         if (strcmp(node->children[i].symbol, definition->children[i].symbol) != 0 &&
@@ -123,7 +118,7 @@ Expression *findDefinition(DefinitionArray array, Expression *node) {
     for (int i = 0; i < array.size; i++) {
         if (array.definitionArray[i].numChildren > 0) {
             if (array.definitionArray[i].children[0].numChildren == argNum) {
-                if (argumentsMatch(&array.definitionArray[i].children[0], node) == 0 ) {
+                if (argumentsMatch(&array.definitionArray[i].children[0], node) == 0) {
                     return &array.definitionArray[i];
                 }
                 if (argumentsMatch(&array.definitionArray[i].children[0], node) == 1) {
@@ -132,7 +127,7 @@ Expression *findDefinition(DefinitionArray array, Expression *node) {
             }
         }
     }
-    if (defaultDefinition != NULL ) {
+    if (defaultDefinition != NULL) {
         return defaultDefinition;
     }
     return node;
@@ -223,29 +218,28 @@ Expression *replaceUnknowns(Expression *node) {
     }
 
 
-    if(node->hold == 0) {
+    if (node->hold == 0) {
         for (int i = 0; i < node->numChildren; i++) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
         }
     }
-    if(node->hold == 1) {
+    if (node->hold == 1) {
         printf("1");
         return node;
     }
-    if(node->hold == 2) {
+    if (node->hold == 2) {
         printf("2");
 
         for (int i = 1; i < node->numChildren; i++) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
         }
     }
-    if(node->hold == 3) {
+    if (node->hold == 3) {
         printf("3");
         for (int i = 0; i < 2; i++) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
         }
     }
-
 
 
     if (isOperator(node->symbol)) {
@@ -307,9 +301,9 @@ Expression *replaceRightChild(Expression *node, struct Context *localContext) {
 void cacheExpression(Expression node, Expression *setTree) {
     Expression definition = *copyNode(evaluate(setTree));
     Expression *expr = createNode("set");
-    addChild(expr,&node);
-    addChild(expr,&definition);
-    set(expr,false);
+    addChild(expr, &node);
+    addChild(expr, &definition);
+    set(expr, false);
 }
 
 Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree) {
@@ -345,14 +339,13 @@ Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree) {
     return replaceRightChild(rightNode, &localContext);
 
 
-
 }
 
 
 Expression *evaluate(
         Expression *expression) {
     Expression *prevResult = NULL;
-    while (prevResult == NULL || expressionsEqual(expression, prevResult)  == 0) {
+    while (prevResult == NULL || expressionsEqual(expression, prevResult) == 0) {
         if (prevResult != NULL) {
             free(prevResult->children);
             free(prevResult->symbol);
@@ -374,8 +367,6 @@ Expression *evaluate(
 }
 
 
-
-
 void printContext() {
     printf("\nContext:\n");
 
@@ -386,10 +377,7 @@ void printContext() {
             printf("\n");
         }
         printf("Attributes:\n");
-        for (size_t j = 0; j < context.definitions[i].countOfAttrs; j++) {
-            printf("%d",context.definitions[i].attrs[i]);
-            printf("\n");
-        }
+
         printf("\n");
     }
 }
