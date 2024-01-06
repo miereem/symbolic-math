@@ -76,6 +76,11 @@ struct Expression *parseExpression(char **expr) {
     if (sscanf(*expr, "%49[^[]", name) != 1) {
         return NULL;
     }
+//    if(name[0]=='-'){
+//        Expression *node = createNode("sub");
+//        addChild(node, createNode("0"));
+//        addChild(node, parseExpression(&child));
+//    }
     char *subString = malloc(strlen(*expr) - strlen(name) - 2);
 
     if (subString == NULL) {
@@ -96,14 +101,14 @@ struct Expression *parseExpression(char **expr) {
         while (isChild(symbol = subString[i], d)) {
             if (symbol == '[') d++;
             if (symbol == ']') d--;
-
-            // Check if the buffer is full and resize if necessary
+            if(d<0) return NULL;
             if (index == bufferSize - 1) {
                 bufferSize *= 2;  // Double the buffer size
                 child = realloc(child, bufferSize * sizeof(char));
 
                 if (child == NULL) {
                     fprintf(stderr, "Memory reallocation error\n");
+                    freeExpression(node);
                     return NULL;  // Exit with an error code
                 }
             }
@@ -111,10 +116,15 @@ struct Expression *parseExpression(char **expr) {
             child[index++] = symbol;
             i++;
         }
+        if(d!=0){
+            freeExpression(node);
+            return NULL;
+        }
         if (index == bufferSize - 1) {
             bufferSize *= 2;  // Double the buffer size
             child = realloc(child, bufferSize * sizeof(char));
             if (child == NULL) {
+                freeExpression(node);
                 fprintf(stderr, "Memory reallocation error\n");
                 return NULL;  // Exit with an error code
             }
@@ -125,7 +135,7 @@ struct Expression *parseExpression(char **expr) {
         addChild(node, parseExpression(&child));
         free(child);
     }
-//    free(subString);
+    free(subString);
     return node;
 }
 struct Expression * parseInput(char **expr){
