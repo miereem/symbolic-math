@@ -5,22 +5,22 @@
 #include "transformer.h"
 
 struct Expression *sum(struct Expression *node) {
-    double sum = 0;
-    double current;
+    int sum = 0;
     struct Expression *res = createNode(node->symbol);
     if (node->numChildren > 0) {
         for (int i = 0; i < node->numChildren; i++) {
-            if ((current = atof(node->children[i].symbol)) != 0) {
-                sum += current;
+            if (isdigit(node->children[i].symbol[0])) {
+                sum += atoi(node->children[i].symbol);
             } else {
                 addChild(res, &node->children[i]);
             }
         }
     }
-    char symbol[sizeof(sum)];
-    snprintf(symbol, sizeof(symbol), "%g", sum);
+    size_t size = sizeof(sum);
+    char symbol[size];
+    sprintf(symbol, "%d", sum);
+    // itoa(sum, symbol[size], 10);
     if (res->numChildren == 0) {
-        freeExpression(res);
         return createNode(symbol);
     } else {
         addChild(res, createNode(symbol));
@@ -28,39 +28,31 @@ struct Expression *sum(struct Expression *node) {
     return res;
 }
 
-struct Expression *less(struct Expression *node) {
-    double first;
-    double second;
-    if (node->numChildren != 2) {
-        return node;
-    }
-    if ((first = atof(node->children[0].symbol)) == 0 ||
-        (second = atof(node->children[1].symbol)) == 0
-            ) {
-        return node;
-    }
-    if (first >= second) {
-        return createNode("false");
-    }
-    return createNode("true");
-}
-struct Expression *more(struct Expression *node) {
-    double first;
-    double second;
-    if (node->numChildren != 2) {
-        return node;
-    }
-    if ((first = atof(node->children[0].symbol)) == 0 ||
-        (second = atof(node->children[1].symbol)) == 0
-            ) {
-        return node;
-    }
-    if (first > second) {
-        return createNode("true");
-    }
-    return createNode("false");
-}
 
+struct Expression *sub(struct Expression *node) {
+    int sum = 0;
+    struct Expression *res = createNode(node->symbol);
+    if (node->numChildren > 0) {
+        for (int i = 0; i < node->numChildren; i++) {
+            if (isdigit(node->children[i].symbol[0])) {
+                sum -= atoi(node->children[i].symbol);
+            } else {
+                addChild(res, &node->children[i]);
+            }
+        }
+    }
+    sum = sum + atoi(node->children[0].symbol);
+    size_t size = sizeof(sum);
+    char symbol[size];
+    sprintf(symbol, "%d", sum);
+    // itoa(sum, symbol[size], 10);
+    if (res->numChildren == 0) {
+        return createNode(symbol);
+    } else {
+        addChild(res, createNode(symbol));
+    }
+    return res;
+}
 
 struct Expression *mul(struct Expression *node) {
     int mul = 1;
@@ -113,7 +105,7 @@ struct Expression *divide(struct Expression *node) {
             return res;
         } else {
             addChild(res, createNode(node->children[0].symbol));
-            //  addChild(mul()) //нужно отправить детей без нулевого ребенка
+          //  addChild(mul()) //нужно отправить детей без нулевого ребенка
         }
     } else {
         return node;
