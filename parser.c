@@ -108,6 +108,7 @@ struct Expression *parseExpression(char **expr) {
 
                 if (child == NULL) {
                     fprintf(stderr, "Memory reallocation error\n");
+                    freeExpression(node);
                     return NULL;  // Exit with an error code
                 }
             }
@@ -116,12 +117,14 @@ struct Expression *parseExpression(char **expr) {
             i++;
         }
         if(d!=0){
+            freeExpression(node);
             return NULL;
         }
         if (index == bufferSize - 1) {
             bufferSize *= 2;  // Double the buffer size
             child = realloc(child, bufferSize * sizeof(char));
             if (child == NULL) {
+                freeExpression(node);
                 fprintf(stderr, "Memory reallocation error\n");
                 return NULL;  // Exit with an error code
             }
@@ -132,7 +135,7 @@ struct Expression *parseExpression(char **expr) {
         addChild(node, parseExpression(&child));
         free(child);
     }
-//    free(subString);
+    free(subString);
     return node;
 }
 struct Expression * parseInput(char **expr){

@@ -10,7 +10,7 @@ struct Expression *sum(struct Expression *node) {
     struct Expression *res = createNode(node->symbol);
     if (node->numChildren > 0) {
         for (int i = 0; i < node->numChildren; i++) {
-            if ((current=atof(node->children[i].symbol))!=0) {
+            if ((current = atof(node->children[i].symbol)) != 0) {
                 sum += current;
             } else {
                 addChild(res, &node->children[i]);
@@ -20,11 +20,45 @@ struct Expression *sum(struct Expression *node) {
     char symbol[sizeof(sum)];
     snprintf(symbol, sizeof(symbol), "%g", sum);
     if (res->numChildren == 0) {
+        freeExpression(res);
         return createNode(symbol);
     } else {
         addChild(res, createNode(symbol));
     }
     return res;
+}
+
+struct Expression *less(struct Expression *node) {
+    double first;
+    double second;
+    if (node->numChildren != 2) {
+        return node;
+    }
+    if ((first = atof(node->children[0].symbol)) == 0 ||
+        (second = atof(node->children[1].symbol)) == 0
+            ) {
+        return node;
+    }
+    if (first >= second) {
+        return createNode("false");
+    }
+    return createNode("true");
+}
+struct Expression *more(struct Expression *node) {
+    double first;
+    double second;
+    if (node->numChildren != 2) {
+        return node;
+    }
+    if ((first = atof(node->children[0].symbol)) == 0 ||
+        (second = atof(node->children[1].symbol)) == 0
+            ) {
+        return node;
+    }
+    if (first > second) {
+        return createNode("true");
+    }
+    return createNode("false");
 }
 
 
@@ -79,7 +113,7 @@ struct Expression *divide(struct Expression *node) {
             return res;
         } else {
             addChild(res, createNode(node->children[0].symbol));
-          //  addChild(mul()) //нужно отправить детей без нулевого ребенка
+            //  addChild(mul()) //нужно отправить детей без нулевого ребенка
         }
     } else {
         return node;

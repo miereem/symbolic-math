@@ -14,5 +14,6 @@ void addChild(Expression *parent, Expression *child);
 Expression *createNode(char *symbol);
 
 Expression *copyNode(Expression *node);
+void freeExpression(Expression *expr);
 
 #endif //SYMBOLIC_UTIL_H

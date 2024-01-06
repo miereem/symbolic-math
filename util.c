@@ -50,19 +50,25 @@ void printExpression(Expression *node) {
         printf("]");
     }
 }
-// void freeTree(Expression *root)
-// {
-//     if (root == NULL)
-//     {
-//         return;
-//     }
 
-//     for (int i = 0; i < root->numChildren; i++)
-//     {
-//         freeTree(&(root->children[i]));
-//     }
+void freeExpression(Expression *expr)
+ {
+     if (expr == NULL)
+     {
+         return;
+     }
+     if (expr->symbol != NULL) {
+         free(expr->symbol);
+     }
 
-//     free(root->children); // Free the array of child nodes
-//     free(root);
-// }
+     if (expr->children != NULL) {
+         for (int i = 0; i < expr->numChildren; ++i) {
+             freeExpression(&(expr->children[i]));
+         }
+         free(expr->children);
+     }
+
+     // Free the Expression structure itself
+     free(expr);
+ }
 

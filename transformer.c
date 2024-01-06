@@ -200,13 +200,13 @@ Expression *replaceUnknowns(Expression *node) {
     if (strcmp(node->symbol, "addAttrs") == 0) {
         enum Hold hold = 0;
         if (strcmp(node->children[1].symbol, "holdAll") == 0) {
-            hold = 1;
+            hold = ALL;
         }
         if (strcmp(node->children[1].symbol, "holdFirst") == 0) {
-            hold = 2;
+            hold = FIRST;
         }
         if (strcmp(node->children[1].symbol, "holdRest") == 0) {
-            hold = 3;
+            hold = REST;
         }
         addAttrs(node->children[0].symbol, hold);
         return node;
@@ -355,6 +355,7 @@ Expression *evaluate(
     while (prevResult == NULL || expressionsEqual(expression, prevResult)  == 0) {
         if (prevResult != NULL) {
             free(prevResult->children);
+            free(prevResult->symbol);
             free(prevResult);
         }
 
