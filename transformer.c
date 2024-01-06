@@ -62,7 +62,6 @@ void addDefinition(int index, Expression *expression, bool isNew) {
             return;
         }
         context.definitions[index].size = 0;
-        context.definitions[index].countOfAttrs = 0;
         context.definitions[index].definitionArray = malloc(sizeof(Expression));
     }
     context.definitions[index].size++;
@@ -84,13 +83,6 @@ int addName(char *symbol) {
 void addAttrs(char* name, enum Hold attr){
     int index;
     if((index = isInContext(name))!=-1){
-        context.definitions[index].countOfAttrs+=1;
-        if ( context.definitions[index].countOfAttrs > 1) {
-            context.definitions[index].attrs= realloc(context.definitions[index].attrs, sizeof (enum Hold)*context.definitions[index].countOfAttrs);
-        } else
-            context.definitions[index].attrs= malloc(sizeof (enum Hold)*context.definitions[index].countOfAttrs);
-
-        context.definitions[index].attrs[context.definitions[index].countOfAttrs-1]=attr;
         for (int i = 0; i < context.definitions[index].size; i++) {
             context.definitions[index].definitionArray[i].children[1].hold = attr;
            // printf("mn %d ", context.definitions[index].definitionArray[i].hold);
@@ -432,11 +424,7 @@ void printContext() {
             printExpression(&context.definitions[i].definitionArray[j]);
             printf("\n");
         }
-        printf("Attributes:\n");
-        for (size_t j = 0; j < context.definitions[i].countOfAttrs; j++) {
-            printf("%d",context.definitions[i].attrs[i]);
-            printf("\n");
-        }
+
         printf("\n");
     }
 }
