@@ -10,7 +10,8 @@ struct Expression *sum(struct Expression *node) {
     struct Expression *res = createNode(node->symbol);
     if (node->numChildren > 0) {
         for (int i = 0; i < node->numChildren; i++) {
-            if ((current = atof(node->children[i].symbol)) != 0) {
+            if ((isdigit(node->children[i].symbol[0])) != 0 || node->children[i].symbol[0] == '-') {
+                current = atof(node->children[i].symbol);
                 sum += current;
             } else {
                 addChild(res, &node->children[i]);

@@ -166,11 +166,6 @@ int isOperator(char *symbol) {
 }
 
 Expression *replaceUnknowns(Expression *node) {
-//    printf("\nnode\n");
-//    printExpression(node);
-//    printf("\nnode\n");
-
-
     if (node == NULL) {
         return NULL;
     }
@@ -192,26 +187,30 @@ Expression *replaceUnknowns(Expression *node) {
     if (strcmp(node->symbol, "addAttrs") == 0) {
         enum Hold hold = 0;
         if (strcmp(node->children[1].symbol, "holdAll") == 0) {
-            hold = 1;
+            hold = ALL;
         }
         if (strcmp(node->children[1].symbol, "holdFirst") == 0) {
-            printf("holdf ");
-            hold = 2;
+            hold = FIRST;
         }
         if (strcmp(node->children[1].symbol, "holdRest") == 0) {
-            hold = 3;
+            hold = REST;
         }
         addAttrs(node->children[0].symbol, hold);
         return node;
     }
+
+
     if(node->hold == 0) {
         for (int i = 0; i < node->numChildren; i++) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
         }
     }
+
+
     if(node->hold == 1) {
         return node;
     }
+
     if(node->hold == 2) {
         for (int i = 1; i < node->numChildren; i++) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
@@ -222,6 +221,7 @@ Expression *replaceUnknowns(Expression *node) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
         }
     }
+
 
 
     if (isOperator(node->symbol)) {
@@ -250,34 +250,8 @@ Expression *replaceUnknowns(Expression *node) {
         }
     }
 
+
     for (size_t i = 0; i < context.numNames; i++) {
-        if (isOperator(node->symbol)) {
-            int allChildrenEvaluated = 1;
-            for (int i = 0; i < node->numChildren; i++) {
-                if (isOperator(node->children[i].symbol)) {
-                    allChildrenEvaluated = 0;
-                    break;
-                }
-            }
-            if (allChildrenEvaluated) {
-                if (strcmp(node->symbol, "sum") == 0) {
-                    Expression *res = sum(node);
-                    free(node->children);
-                    node->children = NULL;
-                    node->numChildren = 0;
-                    node = res;
-
-                } else if (strcmp(node->symbol, "mul") == 0) {
-                    Expression *res = mul(node);
-                    free(node->children);
-                    node->children = NULL;
-                    node->numChildren = 0;
-                    node = res;
-                }
-            }
-        }
-
-
         if (strcmp(node->symbol, context.names[i]) == 0) {
             Expression *setTree = findDefinition(context.definitions[i], node);
 
@@ -288,23 +262,12 @@ Expression *replaceUnknowns(Expression *node) {
         }
     }
 
-
-
-
-
-    printExpression(node);
-    printf("\n");
-    printf("\n");
-
     return node;
 
 }
 
 
 Expression *replacePatterns(Expression *node, struct Context *localContext) {
-    printf("\n");
-    printExpression(node);
-    printf("\n");
     Expression *definedExpression = copyNode(node);
     for (size_t i = 0; i < localContext->numNames; i++) {
         if (strcmp(definedExpression->symbol, localContext->names[i]) == 0) {
@@ -314,26 +277,15 @@ Expression *replacePatterns(Expression *node, struct Context *localContext) {
     for (int i = 0; i < node->numChildren; i++) {
         definedExpression->children[i] = *replacePatterns(&node->children[i], localContext);
     }
-    printExpression(definedExpression);
-    printf("\n");
     return definedExpression;
 }
 
 Expression *replaceRightChild(Expression *node, struct Context *localContext) {
-    printf("mm \n");
-    printLocalContext(*localContext);
-    printExpression(node);
-    printf(" %d \n", node->numChildren );
     Expression *definedExpression = copyNode(node);
     if (node->numChildren > 0) {
         definedExpression = replacePatterns(definedExpression, localContext);
     }
-    printf("def ");
-    printExpression(definedExpression);
-    printf("\n");
-    //printf("%d ", definedExpression->hold);
     return definedExpression;
-
 }
 
 void cacheExpression(Expression node, Expression *setTree) {
@@ -351,10 +303,6 @@ Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree) {
     localContext.definitions = NULL;
     Expression *rightNode = &setTree->children[1];
     Expression *leftNode = &setTree->children[0];
-    printExpression(leftNode);
-    printf("   ");
-    printExpression(rightNode);
-    printf("\n");
     for (int i = 0; i < inputTree->numChildren; i++) {
         if (strcmp(leftNode->children[i].symbol, "Pattern") == 0) {
             char *patternName = strdup(leftNode->children[i].children[0].symbol);
@@ -372,13 +320,6 @@ Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree) {
             *localContext.definitions[localContext.numNames - 1].definitionArray = inputTree->children[i];
         }
     }
-
-
-
-    printExpression(rightNode);
-    printf("   ");
-    printExpression(leftNode);
-    printf("\n");
 
    // cacheExpression(*inputTree, replaceUnknowns(replaceRightChild(rightNode, &localContext)));
 
@@ -403,11 +344,6 @@ Expression *evaluate(
         *prevResult = *copyNode(expression);
 
         expression = replaceUnknowns(expression);
-//        printExpression(prevResult);
-//        printf("  ");
-//        printExpression(expression);
-//        printf("\n");
-
     }
     return expression;
 }

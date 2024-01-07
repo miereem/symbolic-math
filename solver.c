@@ -11,7 +11,4 @@ void solve(char **input){
     printExpression(evaluate(expression));
     printf("\n");
     printf("\n");
-
-   // printExpression(evaluateExpression(evaluate(expression)));
-   // printf("\n");
 }
