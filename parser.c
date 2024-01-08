@@ -91,23 +91,23 @@ char * removeUnusedSymbols(char *expr) {
     result[j] = '\0';  // Null-terminate the modified string
     return result;
 }
-struct Expression *parseExpression(char *expr) {
+struct Expression *parseExpression(char **expr) {
     char name[50] = {};
 
-    if (sscanf(expr, "%49[^[]", name) != 1) {
+    if (sscanf(*expr, "%49[^[]", name) != 1) {
         return NULL;
     }
 //    if(name[0]=='-'){
 //        Expression *node = createNode("sub");
 //        addChild(node, createNode("0"));
-//        addChild(node, parseExpression(child));
+//        addChild(node, parseExpression(&child));
 //    }
-    char *subString = malloc(strlen(expr) - strlen(name) - 2);
+    char *subString = malloc(strlen(*expr) - strlen(name) - 2);
 
     if (subString == NULL) {
-        return createNode(expr);
+        return createNode(*expr);
     }
-    substring(expr, subString, strlen(name) + 1, strlen(expr) - 2 - strlen(name));
+    substring(*expr, subString, strlen(name) + 1, strlen(*expr) - 2 - strlen(name));
 
     Expression *node = createNode(name);
 
@@ -153,15 +153,16 @@ struct Expression *parseExpression(char *expr) {
 
         child[index++] = '\0';
 
-        addChild(node, parseExpression(child));
+        addChild(node, parseExpression(&child));
         free(child);
     }
     free(subString);
     return node;
 }
 struct Expression * parseInput(char **expr){
-    char * filtered = removeUnusedSymbols(*expr);
-    struct Expression * node = parseExpression(filtered);
+    char * filtered  = removeUnusedSymbols(*expr);
+    struct Expression * node = parseExpression(&filtered);
     free(filtered);
+    validatePattern(node);
     return node;
 }
