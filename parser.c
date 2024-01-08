@@ -23,32 +23,22 @@ bool isChild(char s, int d) {
     return true;
 }
 void separateString(const char *input, char **beforeUnderscore, char **afterUnderscore) {
-    // Find the position of the first underscore
     const char *underscorePos = strchr(input, '_');
 
-    // Check if underscore is found
     if (underscorePos != NULL) {
-        // Calculate the length before the underscore
         size_t beforeLength = underscorePos - input;
 
-        // Allocate memory for the "before" string and copy it
         *beforeUnderscore = malloc(beforeLength + 1);
         strncpy(*beforeUnderscore, input, beforeLength);
         (*beforeUnderscore)[beforeLength] = '\0';
 
-        // Allocate memory for the "after" string and copy it
         *afterUnderscore = strdup(underscorePos);
     } else {
-        // If underscore is not found, set "before" to the entire input and "after" to an empty string
         *beforeUnderscore = strdup(input);
         *afterUnderscore = strdup("");
     }
 }
 void validatePattern(struct Expression* node){
-    if (strcmp(node->symbol, "pattern") == 0) {
-        // Code for handling the "pattern" case
-    }
-
     if (strlen(node->symbol) > 0 && node->symbol[strlen(node->symbol) - 1] == '_') {
 
 
@@ -73,7 +63,7 @@ void validatePattern(struct Expression* node){
 char * removeUnusedSymbols(char *expr) {
 
     int i = 0, j = 0;
-    char *result = malloc(strlen(expr) + 1);  // Allocate memory for the modified string
+    char *result = malloc(strlen(expr) + 1);
 
     if (result == NULL) {
         fprintf(stderr, "Memory allocation error\n");
@@ -88,20 +78,16 @@ char * removeUnusedSymbols(char *expr) {
         i++;
     }
 
-    result[j] = '\0';  // Null-terminate the modified string
+    result[j] = '\0';
     return result;
 }
 struct Expression *parseExpression(char **expr) {
     char name[50] = {};
 
     if (sscanf(*expr, "%49[^[]", name) != 1) {
-        return NULL;
+        fprintf(stderr, "Error while trying receive head\n");
+        exit(EXIT_FAILURE);
     }
-//    if(name[0]=='-'){
-//        Expression *node = createNode("sub");
-//        addChild(node, createNode("0"));
-//        addChild(node, parseExpression(&child));
-//    }
     char *subString = malloc(strlen(*expr) - strlen(name) - 2);
 
     if (subString == NULL) {
@@ -122,7 +108,10 @@ struct Expression *parseExpression(char **expr) {
         while (isChild(symbol = subString[i], d)) {
             if (symbol == '[') d++;
             if (symbol == ']') d--;
-            if(d<0) return NULL;
+            if(d<0) {
+                fprintf(stderr, "parentheses error\n");
+                exit(EXIT_FAILURE);
+            }
             if (index == bufferSize - 1) {
                 bufferSize *= 2;  // Double the buffer size
                 child = realloc(child, bufferSize * sizeof(char));
@@ -130,7 +119,7 @@ struct Expression *parseExpression(char **expr) {
                 if (child == NULL) {
                     fprintf(stderr, "Memory reallocation error\n");
                     freeExpression(node);
-                    return NULL;  // Exit with an error code
+                    exit(EXIT_FAILURE);
                 }
             }
 
@@ -139,7 +128,8 @@ struct Expression *parseExpression(char **expr) {
         }
         if(d!=0){
             freeExpression(node);
-            return NULL;
+            fprintf(stderr, "parentheses error\n");
+            exit(EXIT_FAILURE);
         }
         if (index == bufferSize - 1) {
             bufferSize *= 2;  // Double the buffer size
@@ -147,6 +137,7 @@ struct Expression *parseExpression(char **expr) {
             if (child == NULL) {
                 freeExpression(node);
                 fprintf(stderr, "Memory reallocation error\n");
+                exit(EXIT_FAILURE);
                 return NULL;  // Exit with an error code
             }
         }
