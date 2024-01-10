@@ -88,7 +88,7 @@ struct Expression *parseExpression(char **expr) {
         fprintf(stderr, "Error while trying receive head\n");
         exit(EXIT_FAILURE);
     }
-    char *subString = malloc(strlen(*expr) - strlen(name) - 2);
+    char *subString = malloc(strlen(*expr) - strlen(name) - 1);
 
     if (subString == NULL) {
         return createNode(*expr);
@@ -105,7 +105,8 @@ struct Expression *parseExpression(char **expr) {
 
         char *child = (char *) malloc(bufferSize * sizeof(char));
 
-        while (isChild(symbol = subString[i], d)) {
+        while (isChild(subString[i], d)) {
+            symbol= subString[i];
             if (symbol == '[') d++;
             if (symbol == ']') d--;
             if(d<0) {
@@ -142,6 +143,16 @@ struct Expression *parseExpression(char **expr) {
             }
         }
 
+        if (index == bufferSize - 1) {
+            bufferSize *= 2;  // Double the buffer size
+            child = realloc(child, bufferSize * sizeof(char));
+
+            if (child == NULL) {
+                fprintf(stderr, "Memory reallocation error\n");
+                freeExpression(node);
+                exit(EXIT_FAILURE);
+            }
+        }
         child[index++] = '\0';
 
         addChild(node, parseExpression(&child));
