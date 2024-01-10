@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
 #include "util.h"
 #include "transformer.h"
 
@@ -24,7 +25,9 @@ struct Expression *sum(struct Expression *node) {
         freeExpression(res);
         return createNode(symbol);
     } else {
-        addChild(res, createNode(symbol));
+        if (strcmp(symbol, "0") != 0) {
+            addChild(res, createNode(symbol));
+        } else return res;
     }
     return res;
 }

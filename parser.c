@@ -110,7 +110,7 @@ struct Expression *parseExpression(char **expr) {
             if (symbol == '[') d++;
             if (symbol == ']') d--;
             if(d<0) {
-                fprintf(stderr, "parentheses error\n");
+                fprintf(stderr, "pparentheses error\n");
                 exit(EXIT_FAILURE);
             }
             if (index == bufferSize - 1) {
