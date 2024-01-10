@@ -5,6 +5,44 @@
 
 #include "util.h"
 
+struct PlotDTO * parsePLot(Expression *expression) {
+    struct PlotDTO* plotDto = malloc(sizeof (struct PlotDTO));
+    if (expression->numChildren != 3) {
+        fprintf(stderr, "plot must have 3 parameters\n");
+        exit(EXIT_FAILURE);
+    }
+    if (strcmp(expression->children[0].symbol, "s") != 0) {
+        fprintf(stderr, "head must be s\n");
+        exit(EXIT_FAILURE);
+    }
+    struct Plots *plots = malloc(sizeof(struct Plots));
+    plots->count = expression->children[0].numChildren;
+    plots->plots = malloc(sizeof(PointArray) * plots->count);
+    for (int i = 0; i < expression->children[0].numChildren; i++) {
+        if (strcmp(expression->children[0].children[i].symbol, "l") != 0) {
+            fprintf(stderr, "head must be l\n");
+            exit(EXIT_FAILURE);
+        }
+        plots->plots[i].count = expression->children[0].children[i].numChildren;
+        plots->plots[i].points = malloc(sizeof(struct Point) * plots->plots[i].count);
+        for (int pointN = 0; pointN < expression->children[0].children[i].numChildren; pointN++) {
+            if (strcmp(expression->children[0].children[i].children[pointN].symbol, "p") != 0
+                ||
+                expression->children[0].children[i].children[pointN].numChildren != 2) {
+                fprintf(stderr, "head must be p\n");
+                exit(EXIT_FAILURE);
+            }
+
+            plots->plots[i].points[pointN].x = atof(expression->children[0].children[i].children[pointN].children[0].symbol);
+            plots->plots[i].points[pointN].y = atof(expression->children[0].children[i].children[pointN].children[1].symbol);
+
+        }
+    }
+    plotDto->width = atoi(expression->children[1].symbol);
+    plotDto->height = atoi(expression->children[2].symbol);
+    plotDto->plots = *plots;
+    return plotDto;
+}
 
 void substring(char *s, char *sub, int p, int l) {
     int c = 0;
@@ -22,6 +60,7 @@ bool isChild(char s, int d) {
     }
     return true;
 }
+
 void separateString(const char *input, char **beforeUnderscore, char **afterUnderscore) {
     const char *underscorePos = strchr(input, '_');
 
@@ -38,7 +77,8 @@ void separateString(const char *input, char **beforeUnderscore, char **afterUnde
         *afterUnderscore = strdup("");
     }
 }
-void validatePattern(struct Expression* node){
+
+void validatePattern(struct Expression *node) {
     if (strlen(node->symbol) > 0 && node->symbol[strlen(node->symbol) - 1] == '_') {
 
 
@@ -47,20 +87,20 @@ void validatePattern(struct Expression* node){
 
         separateString(node->symbol, &beforeUnderscore, &afterUnderscore);
 
-        node->children=malloc(sizeof(Expression)*2);
-        node->numChildren=2;
-        node->children[0]= *createNode(beforeUnderscore);
-        node->children[1]=*createNode(afterUnderscore);
-        node->symbol= "Pattern";
+        node->children = malloc(sizeof(Expression) * 2);
+        node->numChildren = 2;
+        node->children[0] = *createNode(beforeUnderscore);
+        node->children[1] = *createNode(afterUnderscore);
+        node->symbol = "Pattern";
 
-    }
-    else {
+    } else {
         for (int i = 0; i < node->numChildren; i++) {
             validatePattern(&node->children[i]);
         }
     }
 }
-char * removeUnusedSymbols(char *expr) {
+
+char *removeUnusedSymbols(char *expr) {
 
     int i = 0, j = 0;
     char *result = malloc(strlen(expr) + 1);
@@ -81,9 +121,9 @@ char * removeUnusedSymbols(char *expr) {
     result[j] = '\0';
     return result;
 }
+
 struct Expression *parseExpression(char **expr) {
     char name[50] = {};
-
     if (sscanf(*expr, "%49[^[]", name) != 1) {
         fprintf(stderr, "Error while trying receive head\n");
         exit(EXIT_FAILURE);
@@ -107,10 +147,10 @@ struct Expression *parseExpression(char **expr) {
         char *child = (char *) malloc(bufferSize * sizeof(char));
 
         while (isChild(subString[i], d)) {
-            symbol= subString[i];
+            symbol = subString[i];
             if (symbol == '[') d++;
             if (symbol == ']') d--;
-            if(d<0) {
+            if (d < 0) {
                 fprintf(stderr, "parentheses error\n");
                 exit(EXIT_FAILURE);
             }
@@ -128,7 +168,7 @@ struct Expression *parseExpression(char **expr) {
             child[index++] = symbol;
             i++;
         }
-        if(d!=0){
+        if (d != 0) {
             freeExpression(node);
             fprintf(stderr, "parentheses error\n");
             exit(EXIT_FAILURE);
@@ -162,9 +202,10 @@ struct Expression *parseExpression(char **expr) {
     free(subString);
     return node;
 }
-struct Expression * parseInput(char **expr){
-    char * filtered  = removeUnusedSymbols(*expr);
-    struct Expression * node = parseExpression(&filtered);
+
+struct Expression *parseInput(char **expr) {
+    char *filtered = removeUnusedSymbols(*expr);
+    struct Expression *node = parseExpression(&filtered);
     free(filtered);
     validatePattern(node);
     return node;

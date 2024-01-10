@@ -25,6 +25,11 @@ struct Plots{
     PointArray *plots;
     int count;
 };
+struct PlotDTO{
+    struct Plots plots;
+    int width;
+    int height;
+};
 typedef struct Expression {
     char *symbol;
     struct Expression *children;

@@ -4,5 +4,7 @@
 
 #ifndef SYMBOLIC_PARSER_H
 #define SYMBOLIC_PARSER_H
+#include "structures.h"
 struct Expression *parseInput(char **expr);
+struct PlotDTO * parsePLot(Expression *expression);
 #endif //SYMBOLIC_PARSER_H
