@@ -9,6 +9,7 @@ Expression *createNode(char *symbol)
     newNode->symbol = strdup(symbol);
     newNode->children = NULL;
     newNode->numChildren = 0;
+    newNode->hold = 0;
     return newNode;
 }
 

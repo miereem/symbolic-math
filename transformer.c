@@ -85,8 +85,6 @@ void addAttrs(char* name, enum Hold attr){
     if((index = isInContext(name))!=-1){
         for (int i = 0; i < context.definitions[index].size; i++) {
             context.definitions[index].definitionArray[i].children[1].hold = attr;
-           // printf("mn %d ", context.definitions[index].definitionArray[i].hold);
-
         }
     }
 }
@@ -198,7 +196,6 @@ Expression *replaceUnknowns(Expression *node) {
         return node;
     }
 
-
     if(node->hold == 0) {
         for (int i = 0; i < node->numChildren; i++) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
@@ -272,7 +269,6 @@ Expression *replaceUnknowns(Expression *node) {
             return compareAndAddToContext(node, setTree);
         }
     }
-
     return node;
 
 }
@@ -357,6 +353,8 @@ Expression *evaluate(
 
         expression = replaceUnknowns(expression);
     }
+    expression = replaceUnknowns(expression);
+
     return expression;
 }
 
