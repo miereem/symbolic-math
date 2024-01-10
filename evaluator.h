@@ -8,5 +8,9 @@
 struct Expression *sum(struct Expression *node);
 struct Expression *mul(struct Expression *node);
 struct Expression *divide(struct Expression *node);
+struct Expression *less(struct Expression *node);
+struct Expression *more(struct Expression *node);
+
+
 
 #endif //SYMBOLIC_EVALUATOR_H

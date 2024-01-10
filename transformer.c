@@ -162,7 +162,7 @@ void set(struct Expression *node, bool isDelayed) {
 }
 
 int isOperator(char *symbol) {
-    return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0;
+    return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0;
 }
 
 Expression *replaceUnknowns(Expression *node) {
@@ -242,6 +242,18 @@ Expression *replaceUnknowns(Expression *node) {
 
             } else if (strcmp(node->symbol, "mul") == 0) {
                 Expression *res = mul(node);
+                free(node->children);
+                node->children = NULL;
+                node->numChildren = 0;
+                node = res;
+            } else if (strcmp(node->symbol, "less") == 0) {
+                Expression *res = less(node);
+                free(node->children);
+                node->children = NULL;
+                node->numChildren = 0;
+                node = res;
+            } else if (strcmp(node->symbol, "more") == 0) {
+                Expression *res = more(node);
                 free(node->children);
                 node->children = NULL;
                 node->numChildren = 0;
