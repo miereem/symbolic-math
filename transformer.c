@@ -161,7 +161,7 @@ void set(struct Expression *node, bool isDelayed) {
 }
 
 int isOperator(char *symbol) {
-    return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0;
+    return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0 || strcmp(symbol, "plot") == 0;
 }
 
 Expression *replaceUnknowns(Expression *node) {
