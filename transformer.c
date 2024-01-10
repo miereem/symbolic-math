@@ -109,7 +109,6 @@ int argumentsMatch(Expression *definition, Expression *node) { //0 - arguments m
 }
 
 Expression *findDefinition(DefinitionArray array, Expression *node) {
-//    printExpression(node);
     int argNum = node->numChildren;
     Expression *defaultDefinition = NULL;
     for (int i = 0; i < array.size; i++) {
@@ -280,6 +279,7 @@ Expression *replaceUnknowns(Expression *node) {
 
 
 Expression *replacePatterns(Expression *node, struct Context *localContext) {
+
     Expression *definedExpression = copyNode(node);
     for (size_t i = 0; i < localContext->numNames; i++) {
         if (strcmp(definedExpression->symbol, localContext->names[i]) == 0) {
@@ -294,7 +294,7 @@ Expression *replacePatterns(Expression *node, struct Context *localContext) {
 
 Expression *replaceRightChild(Expression *node, struct Context *localContext) {
     Expression *definedExpression = copyNode(node);
-    if (node->numChildren > 0) {
+    if (node->numChildren >= 0) {
         definedExpression = replacePatterns(definedExpression, localContext);
     }
     return definedExpression;
