@@ -8,6 +8,8 @@
 #include "transformer.h"
 #include "evaluator.h"
 #include "util.h"
+#include "parser.h"
+#include "graph.h"
 
 
 static struct Context context = {
@@ -195,6 +197,10 @@ Expression *replaceUnknowns(Expression *node) {
         addAttrs(node->children[0].symbol, hold);
         return node;
     }
+//    char *plotIn = "plot[s[l[p[1,2], p[2,7]], l[p[1,5],p[6,7]], l[p[2,3], p[6,27]]],400,500]";
+
+
+
 
     if(node->hold == 0) {
         for (int i = 0; i < node->numChildren; i++) {
@@ -254,7 +260,11 @@ Expression *replaceUnknowns(Expression *node) {
                 node->children = NULL;
                 node->numChildren = 0;
                 node = res;
-            }
+            } else if (strcmp(node->symbol, "plot") == 0) {
+                    struct PlotDTO *plotDto = parsePLot(node);
+                    plot(plotDto->plots,plotDto->width, plotDto->height);
+                    return node;
+                }
         }
     }
 
