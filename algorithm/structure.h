@@ -1,37 +1,52 @@
+//
+// Created by yfcni on 12/26/2023.
+//
 
-#ifndef ALGORITHM_STRUCTURE_H
-#define ALGORITHM_STRUCTURE_H
-typedef enum type{
-    EXPRESSION_UNARY,
-    EXPRESSION_BINARY,
-    LIST
-} TokenType;
-typedef enum operation{
-    PLUS,
-    MINUS,
-    MULTIPLICATION,
-    DIVISION,
-    SIN,
-    COS,
-    TAN,
-    CTAN,
-    ASIN,
-    ACOS,
-    ATAN,
-    ACTAN,
-    POWER,
-    LOGARITHM
-} OperationType;
+#ifndef SYMBOLIC_STRUCTURES_H
+#define SYMBOLIC_STRUCTURES_H
 
-typedef struct ExpressionNode{
-    TokenType type;
-    OperationType operation;
-    union {
-        double digit;
-        char* literal;
-    } value;
-    struct expression* left;
-    struct expression* right;
-} ExpressionNode;
+#include <stdbool.h>
+#include <stdio.h>
 
-#endif //ALGORITHM_STRUCTURE_H
+//#include <corecrt.h>
+
+enum Hold {
+    NONE, ALL, FIRST, REST
+};
+struct Point {
+    double x;
+    double y;
+} typedef Point;
+struct PointArray {
+    Point *points;
+    int count;
+} typedef PointArray;
+struct Plots{
+    PointArray *plots;
+    int count;
+};
+struct PlotDTO{
+    struct Plots plots;
+    int width;
+    int height;
+};
+typedef struct Expression {
+    char *symbol;
+    struct Expression *children;
+    int numChildren;
+    enum Hold hold;
+} Expression;
+
+
+struct DefinitionArray {
+    Expression *definitionArray;
+    size_t size;
+} typedef DefinitionArray;
+
+struct Context {
+    size_t numNames;
+    char **names;
+    DefinitionArray *definitions;
+};
+
+#endif //SYMBOLIC_STRUCTURES_H
