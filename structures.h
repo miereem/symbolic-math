@@ -4,6 +4,7 @@
 
 #ifndef SYMBOLIC_STRUCTURES_H
 #define SYMBOLIC_STRUCTURES_H
+
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -12,7 +13,18 @@
 enum Hold {
     NONE, ALL, FIRST, REST
 };
-
+struct Point {
+    double x;
+    double y;
+} typedef Point;
+struct PointArray {
+    Point *points;
+    int count;
+} typedef PointArray;
+struct Plots{
+    PointArray *plots;
+    int count;
+};
 typedef struct Expression {
     char *symbol;
     struct Expression *children;
@@ -21,16 +33,15 @@ typedef struct Expression {
 } Expression;
 
 
-
-struct DefinitionArray{
-    Expression * definitionArray;
+struct DefinitionArray {
+    Expression *definitionArray;
     size_t size;
 } typedef DefinitionArray;
 
 struct Context {
     size_t numNames;
     char **names;
-    DefinitionArray * definitions;
+    DefinitionArray *definitions;
 };
 
 #endif //SYMBOLIC_STRUCTURES_H

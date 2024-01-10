@@ -88,6 +88,7 @@ struct Expression *parseExpression(char **expr) {
         fprintf(stderr, "Error while trying receive head\n");
         exit(EXIT_FAILURE);
     }
+    // оставляем место еще на \0
     char *subString = malloc(strlen(*expr) - strlen(name) - 1);
 
     if (subString == NULL) {
