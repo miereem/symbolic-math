@@ -322,8 +322,8 @@ void patternMatch(Expression *inputTree, Expression *leftNode, struct Context *l
 //            printf("  ---  ");
 //            printExpression(leftNode);
 //            printf("\n");
-//            printExpression(inputTree);
-        if (inputTree->children[i].numChildren > 0 && leftNode->children[i].numChildren > 0) {
+
+            if (inputTree->children[i].numChildren > 0 && leftNode->children[i].numChildren > 0 && strcmp(leftNode->children[i].symbol, "Pattern") != 0) {
             patternMatch(&inputTree->children[i], &leftNode->children[i], localContext);
         } else {
             if (strcmp(leftNode->children[i].symbol, "Pattern") == 0) {
@@ -343,6 +343,8 @@ void patternMatch(Expression *inputTree, Expression *leftNode, struct Context *l
             }
         }
     }
+//    printLocalContext(*localContext);
+//        printf("\n");
 
 }
 
