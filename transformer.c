@@ -197,10 +197,6 @@ Expression *replaceUnknowns(Expression *node) {
         addAttrs(node->children[0].symbol, hold);
         return node;
     }
-//    char *plotIn = "plot[s[l[p[1,2], p[2,7]], l[p[1,5],p[6,7]], l[p[2,3], p[6,27]]],400,500]";
-
-
-
 
     if(node->hold == 0) {
         for (int i = 0; i < node->numChildren; i++) {
@@ -314,6 +310,42 @@ void cacheExpression(Expression node, Expression *setTree) {
     set(expr,false);
 }
 
+
+void patternMatch(Expression *inputTree, Expression *leftNode, struct Context *localContext) {
+    if (leftNode == NULL) {
+        return;
+    }
+
+        for (int i = 0; i < inputTree->numChildren; i++) {
+//            printf("\n");
+//            printExpression(inputTree);
+//            printf("  ---  ");
+//            printExpression(leftNode);
+//            printf("\n");
+//            printExpression(inputTree);
+        if (inputTree->children[i].numChildren > 0 && leftNode->children[i].numChildren > 0) {
+            patternMatch(&inputTree->children[i], &leftNode->children[i], localContext);
+        } else {
+            if (strcmp(leftNode->children[i].symbol, "Pattern") == 0) {
+                char *patternName = strdup(leftNode->children[i].children[0].symbol);
+
+                localContext->numNames++;
+                localContext->names = (char **) realloc(localContext->names, localContext->numNames * sizeof(char *));
+                localContext->names[localContext->numNames - 1] = strdup(patternName);
+
+                localContext->definitions = (DefinitionArray *) realloc(
+                        localContext->definitions, localContext->numNames * sizeof(DefinitionArray));
+
+                localContext->definitions[localContext->numNames - 1].size = 1;
+                localContext->definitions[localContext->numNames - 1].definitionArray =
+                        (Expression *) malloc(sizeof(Expression));
+                *localContext->definitions[localContext->numNames - 1].definitionArray = inputTree->children[i];
+            }
+        }
+    }
+
+}
+
 Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree) {
     struct Context localContext;
     localContext.numNames = 0;
@@ -321,32 +353,13 @@ Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree) {
     localContext.definitions = NULL;
     Expression *rightNode = &setTree->children[1];
     Expression *leftNode = &setTree->children[0];
-    for (int i = 0; i < inputTree->numChildren; i++) {
-        if (strcmp(leftNode->children[i].symbol, "Pattern") == 0) {
-            char *patternName = strdup(leftNode->children[i].children[0].symbol);
 
-            localContext.numNames++;
-            localContext.names = (char **) realloc(localContext.names, localContext.numNames * sizeof(char *));
-            localContext.names[localContext.numNames - 1] = strdup(patternName);
+    patternMatch(inputTree, leftNode, &localContext);
 
-            localContext.definitions = (DefinitionArray *) realloc(
-                    localContext.definitions, localContext.numNames * sizeof(DefinitionArray));
 
-            localContext.definitions[localContext.numNames - 1].size = 1;
-            localContext.definitions[localContext.numNames - 1].definitionArray =
-                    (Expression *) malloc(sizeof(Expression));
-            *localContext.definitions[localContext.numNames - 1].definitionArray = inputTree->children[i];
-        }
-    }
-
-   // cacheExpression(*inputTree, replaceUnknowns(replaceRightChild(rightNode, &localContext)));
-
+    // cacheExpression(*inputTree, replaceUnknowns(replaceRightChild(rightNode, &localContext)));
     return replaceRightChild(rightNode, &localContext);
-
-
-
 }
-
 
 Expression *evaluate(
         Expression *expression) {

@@ -85,13 +85,14 @@ struct Expression *mul(struct Expression *node) {
     if (res->numChildren == 0) {
         return createNode(symbol);
     } else {
-        addChild(res, createNode(symbol));
+        if (strcmp(symbol, "1") != 0) {
+            addChild(res, createNode(symbol));
+        } else return res;
     }
     return res;
 }
 
 struct Expression *divide(struct Expression *node) {
-    //вообще можно сделать логику: отправь всех кроме первого ребенка в mul, потом сделай div(child[0], mul(rest_children));
     if (node->numChildren > 1) {
         struct Expression *res = createNode(node->symbol);
         if (isdigit(node->children[0].symbol[0])) {
@@ -117,11 +118,11 @@ struct Expression *divide(struct Expression *node) {
             return res;
         } else {
             addChild(res, createNode(node->children[0].symbol));
-            //  addChild(mul()) //нужно отправить детей без нулевого ребенка
         }
     } else {
         return node;
     }
 
 }
+
 

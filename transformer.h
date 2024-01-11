@@ -18,7 +18,6 @@ Expression *evaluate(Expression *expression);
 
 Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree);
 
-//Expression *evaluateExpression(Expression *node);
 void printExpression(Expression *node);
 void addAttrs(char* name, enum Hold attr);
 
