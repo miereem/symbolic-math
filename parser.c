@@ -79,6 +79,10 @@ void separateString(const char *input, char **beforeUnderscore, char **afterUnde
 }
 
 void validatePattern(struct Expression *node) {
+    if(node->symbol==""){
+        return;
+    }
+    int n = strlen(node->symbol);
     if (strlen(node->symbol) > 0 && node->symbol[strlen(node->symbol) - 1] == '_') {
 
 
@@ -137,7 +141,9 @@ struct Expression *parseExpression(char **expr) {
     substring(*expr, subString, strlen(name) + 1, strlen(*expr) - 2 - strlen(name));
 
     Expression *node = createNode(name);
-
+    if(strlen(subString)==0){
+        addChild(node, createNode(subString));
+    }
     for (int i = 0; i < strlen(subString); i++) {
         int d = 0;
         char symbol;
