@@ -114,6 +114,13 @@ Expression *findDefinition(DefinitionArray array, Expression *node) {
     for (int i = 0; i < array.size; i++) {
         if (array.definitionArray[i].numChildren > 0) {
             if (array.definitionArray[i].children[0].numChildren == argNum) {
+//                printf("\n");
+//                printExpression(node);
+//                printf(" --- ");
+//                printExpression(&array.definitionArray[i].children[0]);
+//                printf("  ---  ");
+//                printf("%d",(argumentsMatch(&array.definitionArray[i].children[0], node)));
+//                printf("\n");
                 if (argumentsMatch(&array.definitionArray[i].children[0], node) == 0 ) {
                     return &array.definitionArray[i];
                 }
@@ -161,10 +168,13 @@ void set(struct Expression *node, bool isDelayed) {
 }
 
 int isOperator(char *symbol) {
-    return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0 || strcmp(symbol, "plot") == 0;
+    return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0 || strcmp(symbol, "plot") == 0 || strcmp(symbol, "numberQ") == 0 ;
 }
 
 Expression *replaceUnknowns(Expression *node) {
+//    printf("replace \n");
+//    printExpression(node);
+//    printf("\n");
     if (node == NULL) {
         return NULL;
     }
@@ -173,6 +183,7 @@ Expression *replaceUnknowns(Expression *node) {
     }
 
     if (strcmp(node->symbol, "set") == 0) {
+
         set(node, false);
         return node;
     }
@@ -259,8 +270,14 @@ Expression *replaceUnknowns(Expression *node) {
             } else if (strcmp(node->symbol, "plot") == 0) {
                     struct PlotDTO *plotDto = parsePLot(node);
                     plot(plotDto->plots,plotDto->width, plotDto->height);
-                    return node;
-                }
+                return node;
+            } else if (strcmp(node->symbol, "numberQ") == 0) {
+                Expression *res = numberQ(node);
+                free(node->children);
+                node->children = NULL;
+                node->numChildren = 0;
+                node = res;
+            }
         }
     }
 

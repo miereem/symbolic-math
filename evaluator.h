@@ -10,6 +10,7 @@ struct Expression *mul(struct Expression *node);
 struct Expression *divide(struct Expression *node);
 struct Expression *less(struct Expression *node);
 struct Expression *more(struct Expression *node);
+struct Expression *numberQ(struct Expression *node);
 
 
 

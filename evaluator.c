@@ -27,7 +27,9 @@ struct Expression *sum(struct Expression *node) {
     } else {
         if (strcmp(symbol, "0") != 0) {
             addChild(res, createNode(symbol));
-        } else return res;
+        } else if (res->numChildren == 1) {
+            res = &res->children[0];
+        }
     }
     return res;
 }
@@ -90,6 +92,17 @@ struct Expression *mul(struct Expression *node) {
         } else return res;
     }
     return res;
+}
+
+
+struct Expression *numberQ(struct Expression *node) {
+    if (node->numChildren != 1) {
+        return node;
+    }
+    if ((isdigit(node->children[0].symbol[0])) != 0 || node->children[0].symbol[0] == '-') {
+        return createNode("true");
+    }
+    return createNode("false");
 }
 
 struct Expression *divide(struct Expression *node) {
