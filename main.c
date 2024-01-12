@@ -19,7 +19,7 @@ int main() {
     char *der1 = "d[sin[x]]";
     char *der2 = "seq[setDelayed[d[sum[a_,b_]],sum[d[a],d[b]]]]";
     char *der3 = "d[sum[sin[x],x]]";
-    char *input = "set[r,l[]]";
+    char *input = "less[0,-7]";
 
 
     char *plotIn = "plot[s[l[p[1,2], p[2,7]], l[p[1,5],p[6,7]], l[p[2,3], p[6,27]]],400,500]";

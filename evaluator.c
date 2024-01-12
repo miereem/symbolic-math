@@ -40,11 +40,13 @@ struct Expression *less(struct Expression *node) {
     if (node->numChildren != 2) {
         return node;
     }
-    if ((first = atof(node->children[0].symbol)) == 0 ||
-        (second = atof(node->children[1].symbol)) == 0
+    if (isdigit(node->children[0].symbol[0]) == 0 && node->children[0].symbol[0]!= '-' ||
+        isdigit(node->children[1].symbol[0]) == 0 && node->children[1].symbol[0]!= '-'
             ) {
         return node;
     }
+    first = atof(node->children[0].symbol);
+    second = atof(node->children[1].symbol);
     if (first >= second) {
         return createNode("false");
     }
@@ -56,11 +58,13 @@ struct Expression *more(struct Expression *node) {
     if (node->numChildren != 2) {
         return node;
     }
-    if ((first = atof(node->children[0].symbol)) == 0 ||
-        (second = atof(node->children[1].symbol)) == 0
+    if (isdigit(node->children[0].symbol[0]) == 0 && node->children[0].symbol[0]!= '-' ||
+        isdigit(node->children[1].symbol[0]) == 0 && node->children[1].symbol[0]!= '-'
             ) {
         return node;
     }
+    first = atof(node->children[0].symbol);
+    second = atof(node->children[1].symbol);
     if (first > second) {
         return createNode("true");
     }

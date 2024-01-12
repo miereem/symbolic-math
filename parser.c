@@ -82,7 +82,6 @@ void validatePattern(struct Expression *node) {
     if(node->symbol==""){
         return;
     }
-    int n = strlen(node->symbol);
     if (strlen(node->symbol) > 0 && node->symbol[strlen(node->symbol) - 1] == '_') {
 
 
