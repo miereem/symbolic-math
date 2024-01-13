@@ -277,7 +277,6 @@ Expression *replaceUnknowns(Expression *node) {
                 node = res;
             } else if (strcmp(node->symbol, "less") == 0) {
                 Expression *res = less(node);
-                //todo: if less not work well
                 free(node->children);
                 node->children = NULL;
                 node->numChildren = 0;
