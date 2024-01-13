@@ -188,7 +188,7 @@ Expression *append(struct Expression *node) {
 
 
 int isOperator(char *symbol) {
-    return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0 || strcmp(symbol, "plot") == 0 || strcmp(symbol, "numberQ") == 0 || strcmp(symbol, "append") == 0;
+    return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "div") == 0 || strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0 || strcmp(symbol, "plot") == 0 || strcmp(symbol, "numberQ") == 0 || strcmp(symbol, "append") == 0;
 }
 
 Expression *replaceUnknowns(Expression *node) {
@@ -275,6 +275,13 @@ Expression *replaceUnknowns(Expression *node) {
                 node->children = NULL;
                 node->numChildren = 0;
                 node = res;
+
+            }  else if (strcmp(node->symbol, "div") == 0) {
+                    Expression *res = divide(node);
+                    free(node->children);
+                    node->children = NULL;
+                    node->numChildren = 0;
+                    node = res;
             } else if (strcmp(node->symbol, "less") == 0) {
                 Expression *res = less(node);
                 free(node->children);

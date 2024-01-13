@@ -99,37 +99,48 @@ struct Expression *numberQ(struct Expression *node) {
     return createNode("false");
 }
 
+
 struct Expression *divide(struct Expression *node) {
-    if (node->numChildren > 1) {
-        struct Expression *res = createNode(node->symbol);
-        if (isdigit(node->children[0].symbol[0])) {
-            int div = atoi(node->children[0].symbol);
-            char symbol[sizeof(div)];
-            sprintf(symbol, "%d", div);
-            // itoa(mul, symbol[size], 10);
-            addChild(res, createNode(symbol));
-            if (node->numChildren > 1) {
-                for (int i = 1; i < node->numChildren; i++) {
-                    if (isdigit(node->children[i].symbol[0])) {
-                        div /= atoi(node->children[i].symbol);
-                    } else {
-                        addChild(res, createNode(node->children[i].symbol));
-                    }
-                }
-                size_t size = sizeof(div);
-                char symbol[size];
-                sprintf(symbol, "%d", div);
-            } else {
-                addChild(res, createNode(symbol));
-            }
-            return res;
-        } else {
-            addChild(res, createNode(node->children[0].symbol));
-        }
-    } else {
+    if (node->numChildren == 0) {
         return node;
     }
+    if (strcmp(node->children[0].symbol,node->children[1].symbol) == 0) {
+        return createNode("1");
+    }
+    if (strcmp(node->children[1].symbol,"1") == 0) {
+        return createNode(node->children[0].symbol);
+    }
+    double quotient = 0;
+    if ((isdigit(node->children[0].symbol[0])) != 0 || node->children[0].symbol[0] == '-') {
+         quotient = atof(node->children[0].symbol);
+    } else return copyNode(node);
 
+    if ((isdigit(node->children[1].symbol[0])) == 0 && node->children[1].symbol[0] != '-') {
+      return copyNode(node); }
+
+    struct Expression *res = createNode(node->symbol);
+
+    for (int i = 1; i < node->numChildren; i++) {
+        if (isdigit(node->children[i].symbol[0]) && atoi(node->children[i].symbol) != 0) {
+            quotient /= atoi(node->children[i].symbol);
+        } else {
+            addChild(res, &node->children[i]);
+        }
+    }
+
+    size_t size = sizeof(quotient);
+    char symbol[size];
+    sprintf(symbol, "%.1f", quotient);
+
+    if (res->numChildren == 0) {
+        return createNode(symbol);
+    } else {
+        if (strcmp(symbol, "1") != 0) {
+            addChild(res, createNode(symbol));
+        } else return res;
+    }
+
+    return res;
 }
 
 
