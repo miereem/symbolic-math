@@ -167,8 +167,28 @@ void set(struct Expression *node, bool isDelayed) {
     return;
 }
 
+Expression *append(struct Expression *node) {
+    Expression *setTree = NULL;
+    for (size_t i = 0; i < context.numNames; i++) {
+        if (strcmp(node->children[0].symbol, context.names[i]) == 0) {
+            setTree = findDefinition(context.definitions[i], &node->children[0]);
+        }
+    }
+    if (setTree != NULL) {
+        if (strcmp(setTree->children[1].children[0].symbol,"") == 0) {
+            freeExpression(&setTree->children[1].children[0]);
+            setTree->children[1].children[0] = *copyNode(&node->children[1]);
+        } else {
+            addChild(&setTree->children[1], &node->children[1]);
+        }
+    }
+    return node;
+}
+
+
+
 int isOperator(char *symbol) {
-    return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0 || strcmp(symbol, "plot") == 0 || strcmp(symbol, "numberQ") == 0 ;
+    return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0 || strcmp(symbol, "plot") == 0 || strcmp(symbol, "numberQ") == 0 || strcmp(symbol, "append") == 0;
 }
 
 Expression *replaceUnknowns(Expression *node) {
@@ -273,6 +293,12 @@ Expression *replaceUnknowns(Expression *node) {
                 return node;
             } else if (strcmp(node->symbol, "numberQ") == 0) {
                 Expression *res = numberQ(node);
+                free(node->children);
+                node->children = NULL;
+                node->numChildren = 0;
+                node = res;
+            }  else if (strcmp(node->symbol, "append") == 0) {
+                Expression *res = append(node);
                 free(node->children);
                 node->children = NULL;
                 node->numChildren = 0;

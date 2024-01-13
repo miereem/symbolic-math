@@ -35,36 +35,30 @@ struct Expression *sum(struct Expression *node) {
 }
 
 struct Expression *less(struct Expression *node) {
-    double first;
-    double second;
     if (node->numChildren != 2) {
-        return node;
+        return copyNode(node);
     }
-    if ((first = atof(node->children[0].symbol)) == 0 ||
-        (second = atof(node->children[1].symbol)) == 0
-            ) {
-        return node;
-    }
-    if (first >= second) {
-        return createNode("false");
-    }
-    return createNode("true");
+    if (((isdigit(node->children[0].symbol[0])) != 0 || node->children[0].symbol[0] == '-') && ((isdigit(node->children[1].symbol[0])) != 0 || node->children[1].symbol[0] == '-') ) {
+        double first = atof(node->children[0].symbol);
+        double second = atof(node->children[1].symbol);
+        if (first >= second) {
+            return createNode("false");
+        }
+        return createNode("true");
+    } else return copyNode(node);
 }
 struct Expression *more(struct Expression *node) {
-    double first;
-    double second;
     if (node->numChildren != 2) {
-        return node;
+        return copyNode(node);
     }
-    if ((first = atof(node->children[0].symbol)) == 0 ||
-        (second = atof(node->children[1].symbol)) == 0
-            ) {
-        return node;
-    }
-    if (first > second) {
+    if (((isdigit(node->children[0].symbol[0])) != 0 || node->children[0].symbol[0] == '-') && ((isdigit(node->children[1].symbol[0])) != 0 || node->children[1].symbol[0] == '-') ) {
+        double first = atof(node->children[0].symbol);
+        double second = atof(node->children[1].symbol);
+        if (first <= second) {
+            return createNode("false");
+        }
         return createNode("true");
-    }
-    return createNode("false");
+    } else return copyNode(node);
 }
 
 
