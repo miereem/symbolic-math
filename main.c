@@ -19,9 +19,26 @@ int main() {
     char *der1 = "d[sin[x]]";
     char *der2 = "seq[setDelayed[d[sum[a_,b_]],sum[d[a],d[b]]]]";
     char *der3 = "d[sum[sin[x],x]]";
-    char *input = "set[x,l[]]";
 
-    char *input1 = "seq[append[x,6],append[x,78],append[x,sum[8,8]]]";
+
+    char *list = "set[r,l[]]";
+    char *fact = "seq[set[fac[1.], 1], setDelayed[fac[p_],mul[p, fac[sum[p,-1]]]]]";
+    char *pow = "seq[set[pow[p_,1.],p], setDelayed[pow[p_,k_],mul[p,pow[p,sum[k,-1]]]]]";
+    char *sin = "seq[setDelayed[sin[z_,0.], z],"
+                "setDelayed[sin[z_,k_], sum["
+                "mul["
+                "pow[-1,k],"
+                "div["
+                "pow[z, sum[1,mul[2,k]]],"
+                "fac[sum[1,mul[2,k]]]"
+                "]]"
+                ", sin[z, sum[k,-1]]"
+                "]"
+                "]"
+                "]";
+    char *input1 = "append[r,p[0.1,sin[0.1,10]]]";
+    char *input2 = "p[0.1,sin[0.1,10]]";
+    char *input3 = "r";
 
     char *plotIn = "plot[s[l[p[1,2], p[2,7]], l[p[1,5],p[6,7]], l[p[2,3], p[6,27]]],400,500]";
 
@@ -29,8 +46,13 @@ int main() {
 //    solve(&fib);
 //    solve(&If);
 //    solve(&While);
-    solve(&input);
+    solve(&list);
+    solve(&fact);
+    solve(&pow);
+    solve(&sin);
     solve(&input1);
+    solve(&input2);
+    solve(&input3);
 
 //    solve(&der);
 //    solve(&der0);

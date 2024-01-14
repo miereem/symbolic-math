@@ -19,8 +19,11 @@ struct Expression *sum(struct Expression *node) {
             }
         }
     }
-    char symbol[sizeof(sum)];
-    snprintf(symbol, sizeof(symbol), "%g", sum);
+
+//    char symbol[100];
+//    sprintf(symbol, "%.20f", sum);
+    char symbol[100];
+    gcvt(sum, 5, symbol);
     if (res->numChildren == 0) {
         freeExpression(res);
         return createNode(symbol);
@@ -63,20 +66,22 @@ struct Expression *more(struct Expression *node) {
 
 
 struct Expression *mul(struct Expression *node) {
-    int mul = 1;
+    double mul = 1;
     struct Expression *res = createNode(node->symbol);
     if (node->numChildren > 0) {
         for (int i = 0; i < node->numChildren; i++) {
             if (isdigit(node->children[i].symbol[0]) || node->children[i].symbol[0]=='-') {
-                mul *= atoi(node->children[i].symbol);
+                mul *= atof(node->children[i].symbol);
             } else {
                 addChild(res, &node->children[i]);
             }
         }
     }
-    size_t size = sizeof(mul);
-    char symbol[size];
-    sprintf(symbol, "%d", mul);
+
+    char symbol[100];
+    gcvt(mul, 5, symbol);
+
+//    sprintf(symbol, "%.20f", mul);
     // itoa(mul, symbol[size], 10);
     if (res->numChildren == 0) {
         return createNode(symbol);
@@ -121,17 +126,18 @@ struct Expression *divide(struct Expression *node) {
     struct Expression *res = createNode(node->symbol);
 
     for (int i = 1; i < node->numChildren; i++) {
-        if (isdigit(node->children[i].symbol[0]) && atoi(node->children[i].symbol) != 0) {
-            quotient /= atoi(node->children[i].symbol);
+        if (isdigit(node->children[i].symbol[0]) && atof(node->children[i].symbol) != 0) {
+            quotient /= atof(node->children[i].symbol);
         } else {
             addChild(res, &node->children[i]);
         }
     }
 
-    size_t size = sizeof(quotient);
-    char symbol[size];
-    sprintf(symbol, "%.1f", quotient);
 
+//    char symbol[100];
+//    sprintf(symbol, "%.20f", quotient);
+    char symbol[100];
+    gcvt(quotient, 5, symbol);
     if (res->numChildren == 0) {
         return createNode(symbol);
     } else {
