@@ -179,8 +179,7 @@ Expression *append(struct Expression *node) {
     }
     if (setTree != NULL) {
         if (strcmp(setTree->children[1].children[0].symbol,"") == 0) {
-            freeExpression(&setTree->children[1].children[0]);
-            setTree->children[1].children[0] = *copyNode(&node->children[1]);
+            setTree->children[1].children[0] = node->children[1];
         } else {
             addChild(&setTree->children[1], &node->children[1]);
         }
