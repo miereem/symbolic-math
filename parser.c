@@ -6,6 +6,7 @@
 #include "util.h"
 
 struct PlotDTO * parsePLot(Expression *expression) {
+    printExpression(expression);
     struct PlotDTO* plotDto = malloc(sizeof (struct PlotDTO));
     if (expression->numChildren != 3) {
         fprintf(stderr, "plot must have 3 parameters\n");
@@ -32,7 +33,6 @@ struct PlotDTO * parsePLot(Expression *expression) {
                 fprintf(stderr, "head must be p\n");
                 exit(EXIT_FAILURE);
             }
-
             plots->plots[i].points[pointN].x = atof(expression->children[0].children[i].children[pointN].children[0].symbol);
             plots->plots[i].points[pointN].y = atof(expression->children[0].children[i].children[pointN].children[1].symbol);
 

@@ -82,16 +82,18 @@ int addName(char *symbol) {
     context.names[context.numNames - 1] = strdup(symbol);
     return context.numNames - 1;
 }
-void addAttrs(char* name, enum Hold attr){
+
+void addAttrs(char *name, enum Hold attr) {
     int index;
-    if((index = isInContext(name))!=-1){
+    if ((index = isInContext(name)) != -1) {
         for (int i = 0; i < context.definitions[index].size; i++) {
             context.definitions[index].definitionArray[i].children[1].hold = attr;
         }
     }
 }
 
-int argumentsMatch(Expression *definition, Expression *node) { //0 - arguments match ,  1 - default, 2 - has no definition
+int
+argumentsMatch(Expression *definition, Expression *node) { //0 - arguments match ,  1 - default, 2 - has no definition
     int cnt = 0;
     for (size_t i = 0; i < definition->numChildren; i++) {
         if (strcmp(node->children[i].symbol, definition->children[i].symbol) != 0 &&
@@ -121,7 +123,7 @@ Expression *findDefinition(DefinitionArray array, Expression *node) {
 //                printf("  ---  ");
 //                printf("%d",(argumentsMatch(&array.definitionArray[i].children[0], node)));
 //                printf("\n");
-                if (argumentsMatch(&array.definitionArray[i].children[0], node) == 0 ) {
+                if (argumentsMatch(&array.definitionArray[i].children[0], node) == 0) {
                     return &array.definitionArray[i];
                 }
                 if (argumentsMatch(&array.definitionArray[i].children[0], node) == 1) {
@@ -130,7 +132,7 @@ Expression *findDefinition(DefinitionArray array, Expression *node) {
             }
         }
     }
-    if (defaultDefinition != NULL ) {
+    if (defaultDefinition != NULL) {
         return defaultDefinition;
     }
     return node;
@@ -178,7 +180,7 @@ Expression *append(struct Expression *node) {
         }
     }
     if (setTree != NULL) {
-        if (strcmp(setTree->children[1].children[0].symbol,"") == 0) {
+        if (strcmp(setTree->children[1].children[0].symbol, "") == 0) {
             setTree->children[1].children[0] = node->children[1];
         } else {
             addChild(&setTree->children[1], &node->children[1]);
@@ -188,9 +190,10 @@ Expression *append(struct Expression *node) {
 }
 
 
-
 int isOperator(char *symbol) {
-    return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "div") == 0 || strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0 || strcmp(symbol, "plot") == 0 || strcmp(symbol, "numberQ") == 0 || strcmp(symbol, "append") == 0;
+    return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "div") == 0 ||
+           strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0 || strcmp(symbol, "plot") == 0 ||
+           strcmp(symbol, "numberQ") == 0 || strcmp(symbol, "append") == 0;
 }
 
 Expression *replaceUnknowns(Expression *node) {
@@ -200,8 +203,8 @@ Expression *replaceUnknowns(Expression *node) {
     if (node == NULL) {
         return NULL;
     }
-    if (strcmp(node->symbol,"append") == 0 ) {
-       node->hold = FIRST;
+    if (strcmp(node->symbol, "append") == 0) {
+        node->hold = FIRST;
     }
 
     if (strcmp(node->symbol, "set") == 0) {
@@ -231,28 +234,27 @@ Expression *replaceUnknowns(Expression *node) {
         return node;
     }
 
-    if(node->hold == 0) {
+    if (node->hold == 0) {
         for (int i = 0; i < node->numChildren; i++) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
         }
     }
 
 
-    if(node->hold == 1) {
+    if (node->hold == 1) {
         return node;
     }
 
-    if(node->hold == 2) {
+    if (node->hold == 2) {
         for (int i = 1; i < node->numChildren; i++) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
         }
     }
-    if(node->hold == 3) {
+    if (node->hold == 3) {
         for (int i = 0; i < 2; i++) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
         }
     }
-
 
 
     if (isOperator(node->symbol)) {
@@ -278,12 +280,12 @@ Expression *replaceUnknowns(Expression *node) {
                 node->numChildren = 0;
                 node = res;
 
-            }  else if (strcmp(node->symbol, "div") == 0) {
-                    Expression *res = divide(node);
-                    free(node->children);
-                    node->children = NULL;
-                    node->numChildren = 0;
-                    node = res;
+            } else if (strcmp(node->symbol, "div") == 0) {
+                Expression *res = divide(node);
+                free(node->children);
+                node->children = NULL;
+                node->numChildren = 0;
+                node = res;
             } else if (strcmp(node->symbol, "less") == 0) {
                 Expression *res = less(node);
                 free(node->children);
@@ -297,8 +299,9 @@ Expression *replaceUnknowns(Expression *node) {
                 node->numChildren = 0;
                 node = res;
             } else if (strcmp(node->symbol, "plot") == 0) {
-                    struct PlotDTO *plotDto = parsePLot(node);
-                    plot(plotDto->plots,plotDto->width, plotDto->height);
+                node->children = evaluate(node->children);
+                struct PlotDTO *plotDto = parsePLot(node);
+                plot(plotDto->plots, plotDto->width, plotDto->height);
                 return node;
             } else if (strcmp(node->symbol, "numberQ") == 0) {
                 Expression *res = numberQ(node);
@@ -306,7 +309,7 @@ Expression *replaceUnknowns(Expression *node) {
                 node->children = NULL;
                 node->numChildren = 0;
                 node = res;
-            }  else if (strcmp(node->symbol, "append") == 0) {
+            } else if (strcmp(node->symbol, "append") == 0) {
                 Expression *res = append(node);
                 free(node->children);
                 node->children = NULL;
@@ -357,9 +360,9 @@ Expression *replaceRightChild(Expression *node, struct Context *localContext) {
 void cacheExpression(Expression node, Expression *setTree) {
     Expression definition = *copyNode(evaluate(setTree));
     Expression *expr = createNode("set");
-    addChild(expr,&node);
-    addChild(expr,&definition);
-    set(expr,false);
+    addChild(expr, &node);
+    addChild(expr, &definition);
+    set(expr, false);
 }
 
 
@@ -368,14 +371,15 @@ void patternMatch(Expression *inputTree, Expression *leftNode, struct Context *l
         return;
     }
 
-        for (int i = 0; i < inputTree->numChildren; i++) {
+    for (int i = 0; i < inputTree->numChildren; i++) {
 //            printf("\n");
 //            printExpression(inputTree);
 //            printf("  ---  ");
 //            printExpression(leftNode);
 //            printf("\n");
 
-            if (inputTree->children[i].numChildren > 0 && leftNode->children[i].numChildren > 0 && strcmp(leftNode->children[i].symbol, "Pattern") != 0) {
+        if (inputTree->children[i].numChildren > 0 && leftNode->children[i].numChildren > 0 &&
+            strcmp(leftNode->children[i].symbol, "Pattern") != 0) {
             patternMatch(&inputTree->children[i], &leftNode->children[i], localContext);
         } else {
             if (strcmp(leftNode->children[i].symbol, "Pattern") == 0) {
@@ -418,7 +422,7 @@ Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree) {
 Expression *evaluate(
         Expression *expression) {
     Expression *prevResult = NULL;
-    while (prevResult == NULL || expressionsEqual(expression, prevResult)  == 0) {
+    while (prevResult == NULL || expressionsEqual(expression, prevResult) == 0) {
         if (prevResult != NULL) {
             free(prevResult->children);
             free(prevResult);
@@ -430,12 +434,10 @@ Expression *evaluate(
 
         expression = replaceUnknowns(expression);
     }
-   // expression = replaceUnknowns(expression);
+    // expression = replaceUnknowns(expression);
 
     return expression;
 }
-
-
 
 
 void printContext() {

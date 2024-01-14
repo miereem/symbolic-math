@@ -9,7 +9,6 @@ int main() {
     char *fib = "seq[set[f[0],0],set[f[1],1],set[f[2],1],setDelayed[f[n_],sum[f[sum[n,-1]],f[sum[n,-2]]]],f[20]]";
 
     char *If = "seq[setDelayed[if[true,t_,e_],t],setDelayed[if[false,t_,e_],e],addAttrs[if,holdRest]]";
-    char *While = "setDelayed[f[x_],if[less[x,3],1,sum[f[sum[x,-1]],f[sum[x,-2]]]]]";
 
 //    char *input = "numberQ[sum[9,5]]";
     char *der4 = "seq[setDelayed[d[p_],if[numberQ[p],0,1]],set[d[sin[p_]],cos[p]]]";
@@ -21,6 +20,7 @@ int main() {
     char *der3 = "d[sum[sin[x],x]]";
 
 
+    char *While = "seq[setDelayed[while[true,a_,b_],a], setDelayed[while[false,a_,b_],b]]";
     char *list = "set[r,l[]]";
     char *fact = "seq[set[fac[1.], 1], setDelayed[fac[p_],mul[p, fac[sum[p,-1]]]]]";
     char *pow = "seq[set[pow[p_,1.],p], setDelayed[pow[p_,k_],mul[p,pow[p,sum[k,-1]]]]]";
@@ -36,23 +36,27 @@ int main() {
                 "]"
                 "]"
                 "]";
-    char *input1 = "append[r,p[0.1,sin[0.1,10]]]";
-    char *input2 = "p[0.1,sin[0.1,10]]";
-    char *input3 = "r";
-
-    char *plotIn = "plot[s[l[p[1,2], p[2,7]], l[p[1,5],p[6,7]], l[p[2,3], p[6,27]]],400,500]";
+    char *input1 = "setDelayed["
+                   "sinW[from_,to_],"
+                   "while["
+                   "less[from,to], "
+                   "seq[ append[r,p[from,sin[from,10]]], sinW[sum[from,0.1],to]  ],"
+                   " s[r] ]"
+                   "]";
+    char *input2 = "sinW[-3,3]";
+    char *plotIn = "plot[s[r],400,500]";
 
     initContext();
 //    solve(&fib);
 //    solve(&If);
-//    solve(&While);
+    solve(&While);
     solve(&list);
     solve(&fact);
     solve(&pow);
     solve(&sin);
     solve(&input1);
     solve(&input2);
-    solve(&input3);
+    solve(&plotIn);
 
 //    solve(&der);
 //    solve(&der0);
