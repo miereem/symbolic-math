@@ -131,6 +131,10 @@ struct Expression *parseExpression(char **expr) {
         fprintf(stderr, "Error while trying receive head\n");
         exit(EXIT_FAILURE);
     }
+    if(strlen(*expr) != strlen(name) && (*expr)[strlen(*expr) - 1]!=']'){
+        fprintf(stderr, "parentheses error, no ]\n");
+        exit(EXIT_FAILURE);
+    }
     // оставляем место еще на \0
     char *subString = malloc(strlen(*expr) - strlen(name) - 1);
 
