@@ -67,7 +67,7 @@ struct Expression *mul(struct Expression *node) {
     struct Expression *res = createNode(node->symbol);
     if (node->numChildren > 0) {
         for (int i = 0; i < node->numChildren; i++) {
-            if (isdigit(node->children[i].symbol[0])) {
+            if (isdigit(node->children[i].symbol[0]) || node->children[i].symbol[0]=='-') {
                 mul *= atoi(node->children[i].symbol);
             } else {
                 addChild(res, &node->children[i]);
