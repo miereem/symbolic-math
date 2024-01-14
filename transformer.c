@@ -168,6 +168,9 @@ void set(struct Expression *node, bool isDelayed) {
 }
 
 Expression *append(struct Expression *node) {
+    if (node->numChildren == 0) {
+        return node;
+    }
     Expression *setTree = NULL;
     for (size_t i = 0; i < context.numNames; i++) {
         if (strcmp(node->children[0].symbol, context.names[i]) == 0) {
@@ -198,8 +201,8 @@ Expression *replaceUnknowns(Expression *node) {
     if (node == NULL) {
         return NULL;
     }
-    if (node->numChildren == 0) {
-        return node;
+    if (strcmp(node->symbol,"append") == 0 ) {
+       node->hold = FIRST;
     }
 
     if (strcmp(node->symbol, "set") == 0) {
@@ -428,7 +431,7 @@ Expression *evaluate(
 
         expression = replaceUnknowns(expression);
     }
-    expression = replaceUnknowns(expression);
+   // expression = replaceUnknowns(expression);
 
     return expression;
 }
