@@ -244,6 +244,26 @@ Expression *first(struct Expression *node) {
     return node;
 }
 
+
+Expression *last(struct Expression *node) {
+    if (node->numChildren == 0) {
+        return node;
+    }
+    Expression *setTree = NULL;
+    for (size_t i = 0; i < context.numNames; i++) {
+        if (strcmp(node->children[0].symbol, context.names[i]) == 0) {
+            setTree = findDefinition(context.definitions[i], &node->children[0]);
+        }
+    }
+    if (setTree != NULL) {
+        if (strcmp(setTree->children[1].children[0].symbol,"") == 0) {
+            return createNode("Null");
+        } else {
+            return createNode(setTree->children[1].children[setTree->children[1].numChildren - 1].symbol);
+        }
+    }
+    return node;
+}
 //Append(list, item)
 //Prepend(list, item)
 //Rest(list)
@@ -276,6 +296,9 @@ Expression *replaceUnknowns(Expression *node) {
     }
     if (strcmp(node->symbol, "first") == 0) {
         return first(node);
+    }
+    if (strcmp(node->symbol, "last") == 0) {
+        return last(node);
     }
     if (strcmp(node->symbol, "set") == 0) {
 
