@@ -180,9 +180,9 @@ void set(struct Expression *node, bool isDelayed) {
     return;
 }
 
-void append(struct Expression *node) {
+Expression *append(struct Expression *node) {
     if (node->numChildren == 0) {
-        return;
+        return node;
     }
     Expression *setTree = NULL;
     for (size_t i = 0; i < context.numNames; i++) {
@@ -197,14 +197,37 @@ void append(struct Expression *node) {
             addChild(&setTree->children[1], &node->children[1]);
         }
     }
-    return;
+    return node;
+}
+
+
+Expression *len(struct Expression *node) {
+    if (node->numChildren == 0) {
+        return node;
+    }
+    Expression *setTree = NULL;
+    for (size_t i = 0; i < context.numNames; i++) {
+        if (strcmp(node->children[0].symbol, context.names[i]) == 0) {
+            setTree = findDefinition(context.definitions[i], &node->children[0]);
+        }
+    }
+    if (setTree != NULL) {
+        if (strcmp(setTree->children[1].children[0].symbol,"") == 0) {
+            return createNode("0");
+        } else {
+            char symbol[100];
+            sprintf(symbol, "%d", setTree->children[1].numChildren);
+            return createNode(symbol);
+        }
+    }
+    return node;
 }
 
 
 int isOperator(char *symbol) {
     return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "div") == 0 ||
            strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0 || strcmp(symbol, "plot") == 0 ||
-           strcmp(symbol, "numberQ") == 0 || strcmp(symbol, "append") == 0;
+           strcmp(symbol, "numberQ") == 0 || strcmp(symbol, "append") == 0 || strcmp(symbol, "len") == 0;
 }
 
 Expression *replaceUnknowns(Expression *node) {
@@ -217,6 +240,10 @@ Expression *replaceUnknowns(Expression *node) {
     }
     if (strcmp(node->symbol, "append") == 0) {
         node->hold = FIRST;
+    }
+
+    if (strcmp(node->symbol, "len") == 0) {
+        return len(node);
     }
 
     if (strcmp(node->symbol, "set") == 0) {
@@ -271,12 +298,12 @@ Expression *replaceUnknowns(Expression *node) {
 
     if (isOperator(node->symbol)) {
         int allChildrenEvaluated = 1;
-        for (int i = 0; i < node->numChildren; i++) {
-            if (isOperator(node->children[i].symbol)) {
-                allChildrenEvaluated = 0;
-                break;
-            }
-        }
+//        for (int i = 0; i < node->numChildren; i++) {
+//            if (isOperator(node->children[i].symbol)) {
+//                allChildrenEvaluated = 0;
+//                break;
+//            }
+//        }
         if (allChildrenEvaluated) {
             if (strcmp(node->symbol, "sum") == 0) {
                 Expression *res = sum(node);
@@ -322,7 +349,11 @@ Expression *replaceUnknowns(Expression *node) {
                 node->numChildren = 0;
                 node = res;
             } else if (strcmp(node->symbol, "append") == 0) {
-                append(node);
+                Expression *res = append(node);
+                free(node->children);
+                node->children = NULL;
+                node->numChildren = 0;
+                node = res;
             }
         }
     }
