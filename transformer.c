@@ -56,6 +56,20 @@ int isDefaultDefinition(Expression *expression) {
     return 0;
 }
 
+int expressionsEqual(Expression *expr1, Expression *expr2) {
+    if (strcmp(expr1->symbol, expr2->symbol) != 0 || expr1->numChildren != expr2->numChildren) {
+        return 0;
+    }
+
+    for (int i = 0; i < expr1->numChildren; i++) {
+        if (!expressionsEqual(&expr1->children[i], &expr2->children[i])) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 void addDefinition(int index, Expression *expression, bool isNew) {
     if (isNew) {
         context.definitions = realloc(context.definitions, context.numNames * sizeof(DefinitionArray));
@@ -66,6 +80,15 @@ void addDefinition(int index, Expression *expression, bool isNew) {
         context.definitions[index].size = 0;
         context.definitions[index].definitionArray = malloc(sizeof(Expression));
     }
+
+    for (int i = 0; i < context.definitions[index].size; i++) {
+        if (expressionsEqual(&expression->children[0],&context.definitions[index].definitionArray[i].children[0])) {
+            context.definitions[index].definitionArray[i] = *expression;
+            return;
+        }
+    }
+
+
     context.definitions[index].size++;
     context.definitions[index].definitionArray = realloc(context.definitions[index].definitionArray,
                                                          context.definitions[index].size * sizeof(Expression));
@@ -138,19 +161,7 @@ Expression *findDefinition(DefinitionArray array, Expression *node) {
     return node;
 }
 
-int expressionsEqual(Expression *expr1, Expression *expr2) {
-    if (strcmp(expr1->symbol, expr2->symbol) != 0 || expr1->numChildren != expr2->numChildren) {
-        return 0;
-    }
 
-    for (int i = 0; i < expr1->numChildren; i++) {
-        if (!expressionsEqual(&expr1->children[i], &expr2->children[i])) {
-            return 0;
-        }
-    }
-
-    return 1;
-}
 
 void set(struct Expression *node, bool isDelayed) {
 
@@ -169,9 +180,9 @@ void set(struct Expression *node, bool isDelayed) {
     return;
 }
 
-Expression *append(struct Expression *node) {
+void append(struct Expression *node) {
     if (node->numChildren == 0) {
-        return node;
+        return;
     }
     Expression *setTree = NULL;
     for (size_t i = 0; i < context.numNames; i++) {
@@ -186,7 +197,7 @@ Expression *append(struct Expression *node) {
             addChild(&setTree->children[1], &node->children[1]);
         }
     }
-    return node;
+    return;
 }
 
 
@@ -200,6 +211,7 @@ Expression *replaceUnknowns(Expression *node) {
 //    printf("replace \n");
 //    printExpression(node);
 //    printf("\n");
+//    printContext();
     if (node == NULL) {
         return NULL;
     }
@@ -299,9 +311,9 @@ Expression *replaceUnknowns(Expression *node) {
                 node->numChildren = 0;
                 node = res;
             } else if (strcmp(node->symbol, "plot") == 0) {
-                node->children = evaluate(node->children);
-                struct PlotDTO *plotDto = parsePLot(node);
-                plot(plotDto->plots, plotDto->width, plotDto->height);
+//                node->children = evaluate(node->children);
+//                struct PlotDTO *plotDto = parsePLot(node);
+//                plot(plotDto->plots, plotDto->width, plotDto->height);
                 return node;
             } else if (strcmp(node->symbol, "numberQ") == 0) {
                 Expression *res = numberQ(node);
@@ -310,11 +322,7 @@ Expression *replaceUnknowns(Expression *node) {
                 node->numChildren = 0;
                 node = res;
             } else if (strcmp(node->symbol, "append") == 0) {
-                Expression *res = append(node);
-                free(node->children);
-                node->children = NULL;
-                node->numChildren = 0;
-                node = res;
+                append(node);
             }
         }
     }
