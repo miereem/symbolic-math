@@ -264,14 +264,30 @@ Expression *last(struct Expression *node) {
     }
     return node;
 }
-//Append(list, item)
-//Prepend(list, item)
-//Rest(list)
-//Last(list)
-//First(list)
-//Head(list)
-//Length(list)
 
+Expression *rest(struct Expression *node) {
+    if (node->numChildren == 0) {
+        return node;
+    }
+    Expression *setTree = NULL;
+    for (size_t i = 0; i < context.numNames; i++) {
+        if (strcmp(node->children[0].symbol, context.names[i]) == 0) {
+            setTree = findDefinition(context.definitions[i], &node->children[0]);
+        }
+    }
+    if (setTree != NULL) {
+        if (strcmp(setTree->children[1].children[0].symbol,"") == 0) {
+            return copyNode(&setTree->children[1]);
+        } else {
+            Expression *res = createNode(setTree->children[1].symbol);
+            for (int i = 1; i < setTree->children[1].numChildren; i++) {
+                addChild(res,&setTree->children[1].children[i]);
+            }
+            return res;
+        }
+    }
+    return node;
+}
 
 int isOperator(char *symbol) {
     return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "div") == 0 ||
@@ -299,6 +315,9 @@ Expression *replaceUnknowns(Expression *node) {
     }
     if (strcmp(node->symbol, "last") == 0) {
         return last(node);
+    }
+    if (strcmp(node->symbol, "rest") == 0) {
+        return rest(node);
     }
     if (strcmp(node->symbol, "set") == 0) {
 
@@ -392,9 +411,9 @@ Expression *replaceUnknowns(Expression *node) {
                 node->numChildren = 0;
                 node = res;
             } else if (strcmp(node->symbol, "plot") == 0) {
-//                node->children = evaluate(node->children);
-//                struct PlotDTO *plotDto = parsePLot(node);
-//                plot(plotDto->plots, plotDto->width, plotDto->height);
+                node->children = evaluate(node->children);
+                struct PlotDTO *plotDto = parsePLot(node);
+                plot(plotDto->plots, plotDto->width, plotDto->height);
                 return node;
             } else if (strcmp(node->symbol, "numberQ") == 0) {
                 Expression *res = numberQ(node);
