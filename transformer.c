@@ -224,6 +224,35 @@ Expression *len(struct Expression *node) {
 }
 
 
+Expression *first(struct Expression *node) {
+    if (node->numChildren == 0) {
+        return node;
+    }
+    Expression *setTree = NULL;
+    for (size_t i = 0; i < context.numNames; i++) {
+        if (strcmp(node->children[0].symbol, context.names[i]) == 0) {
+            setTree = findDefinition(context.definitions[i], &node->children[0]);
+        }
+    }
+    if (setTree != NULL) {
+        if (strcmp(setTree->children[1].children[0].symbol,"") == 0) {
+            return createNode("Null");
+        } else {
+            return createNode(setTree->children[1].children[0].symbol);
+        }
+    }
+    return node;
+}
+
+//Append(list, item)
+//Prepend(list, item)
+//Rest(list)
+//Last(list)
+//First(list)
+//Head(list)
+//Length(list)
+
+
 int isOperator(char *symbol) {
     return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "div") == 0 ||
            strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0 || strcmp(symbol, "plot") == 0 ||
@@ -245,7 +274,9 @@ Expression *replaceUnknowns(Expression *node) {
     if (strcmp(node->symbol, "len") == 0) {
         return len(node);
     }
-
+    if (strcmp(node->symbol, "first") == 0) {
+        return first(node);
+    }
     if (strcmp(node->symbol, "set") == 0) {
 
         set(node, false);
