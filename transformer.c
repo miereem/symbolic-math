@@ -317,10 +317,16 @@ Expression *replaceUnknowns(Expression *node) {
     if (node == NULL) {
         return NULL;
     }
+//    if (strcmp(node->symbol, "append") == 0) {
+//        node->hold = FIRST;
+//    }
     if (strcmp(node->symbol, "append") == 0) {
-        node->hold = FIRST;
+        Expression *res = append(node);
+        free(node->children);
+        node->children = NULL;
+        node->numChildren = 0;
+        node = res;
     }
-
     if (strcmp(node->symbol, "len") == 0) {
         return len(node);
     }
