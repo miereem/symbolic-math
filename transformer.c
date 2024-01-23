@@ -360,9 +360,77 @@ Expression *replaceUnknowns(Expression *node) {
         return node;
     }
 
+    if (isOperator(node->symbol)) {
+        for (int i = 0; i < node->numChildren; i++) {
+            node->children[i] = *replaceUnknowns(&node->children[i]);
+        }
+        if (strcmp(node->symbol, "sum") == 0) {
+            Expression *res = sum(node);
+            free(node->children);
+            node->children = NULL;
+            node->numChildren = 0;
+            node = res;
+
+        } else if (strcmp(node->symbol, "mul") == 0) {
+            Expression *res = mul(node);
+            free(node->children);
+            node->children = NULL;
+            node->numChildren = 0;
+            node = res;
+
+        } else if (strcmp(node->symbol, "div") == 0) {
+            Expression *res = divide(node);
+            free(node->children);
+            node->children = NULL;
+            node->numChildren = 0;
+            node = res;
+        } else if (strcmp(node->symbol, "less") == 0) {
+            Expression *res = less(node);
+            free(node->children);
+            node->children = NULL;
+            node->numChildren = 0;
+            node = res;
+            return node;
+        } else if (strcmp(node->symbol, "more") == 0) {
+            Expression *res = more(node);
+            free(node->children);
+            node->children = NULL;
+            node->numChildren = 0;
+            node = res;
+            return node;
+        } else if (strcmp(node->symbol, "plot") == 0) {
+//                node->children = evaluate(node->children);
+//                struct PlotDTO *plotDto = parsePLot(node);
+//                plot(plotDto->plots, plotDto->width, plotDto->height);
+            return node;
+        } else if (strcmp(node->symbol, "numberQ") == 0) {
+            Expression *res = numberQ(node);
+            free(node->children);
+            node->children = NULL;
+            node->numChildren = 0;
+            node = res;
+        } else if (strcmp(node->symbol, "append") == 0) {
+            Expression *res = append(node);
+            free(node->children);
+            node->children = NULL;
+            node->numChildren = 0;
+            node = res;
+        } else if (strcmp(node->symbol, "seq") == 0) {
+//                node = &node->children[node->numChildren-1];
+//                Expression *res = seq(node);
+//                free(node->children);
+//                node->children = NULL;
+//                node->numChildren = 0;
+//                node = res;
+        }
+    }
 
 
-    if (node->hold == NONE) {
+
+
+
+
+       if (node->hold == NONE) {
         for (int i = 0; i < node->numChildren; i++) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
         }
@@ -373,9 +441,6 @@ Expression *replaceUnknowns(Expression *node) {
                 if (expressionsEqual(setTree, node)) {
                     return node;
                 }
-//                printf("jhghjg\n");
-//                printExpression(compareAndAddToContext(node, setTree));
-                printf("\n");
                 return compareAndAddToContext(node, setTree);
             }
         }
@@ -394,87 +459,6 @@ Expression *replaceUnknowns(Expression *node) {
         return node;
     }
 
-    if (isOperator(node->symbol)) {
-        int allChildrenEvaluated = 1;
-//        for (int i = 0; i < node->numChildren; i++) {
-//            if (isOperator(node->children[i].symbol)) {
-//                allChildrenEvaluated = 0;
-//                break;
-//            }
-//        }
-        if (allChildrenEvaluated) {
-            if (strcmp(node->symbol, "sum") == 0) {
-                Expression *res = sum(node);
-                free(node->children);
-                node->children = NULL;
-                node->numChildren = 0;
-                node = res;
-
-            } else if (strcmp(node->symbol, "mul") == 0) {
-                Expression *res = mul(node);
-                free(node->children);
-                node->children = NULL;
-                node->numChildren = 0;
-                node = res;
-
-            } else if (strcmp(node->symbol, "div") == 0) {
-                Expression *res = divide(node);
-                free(node->children);
-                node->children = NULL;
-                node->numChildren = 0;
-                node = res;
-            } else if (strcmp(node->symbol, "less") == 0) {
-                Expression *res = less(node);
-                free(node->children);
-                node->children = NULL;
-                node->numChildren = 0;
-                printf("hey\n");
-                printExpression(res);
-                printf("\n");
-
-                node = res;
-                printExpression(res);
-                printf("\n");
-
-                printExpression(node);
-                printf("\n");
-
-
-                return node;
-            } else if (strcmp(node->symbol, "more") == 0) {
-                Expression *res = more(node);
-                free(node->children);
-                node->children = NULL;
-                node->numChildren = 0;
-                node = res;
-                return node;
-            } else if (strcmp(node->symbol, "plot") == 0) {
-//                node->children = evaluate(node->children);
-//                struct PlotDTO *plotDto = parsePLot(node);
-//                plot(plotDto->plots, plotDto->width, plotDto->height);
-                return node;
-            } else if (strcmp(node->symbol, "numberQ") == 0) {
-                Expression *res = numberQ(node);
-                free(node->children);
-                node->children = NULL;
-                node->numChildren = 0;
-                node = res;
-            } else if (strcmp(node->symbol, "append") == 0) {
-                Expression *res = append(node);
-                free(node->children);
-                node->children = NULL;
-                node->numChildren = 0;
-                node = res;
-            } else if (strcmp(node->symbol, "seq") == 0) {
-//                node = &node->children[node->numChildren-1];
-//                Expression *res = seq(node);
-//                free(node->children);
-//                node->children = NULL;
-//                node->numChildren = 0;
-//                node = res;
-            }
-        }
-    }
 
 
     for (size_t i = 0; i < context.numNames; i++) {
@@ -501,7 +485,7 @@ Expression *replacePatterns(Expression *node, struct Context *localContext) {
         }
     }
     for (int i = 0; i < node->numChildren; i++) {
-        definedExpression->children[i] = *replacePatterns(&node->children[i], localContext);
+        definedExpression->children[i] = *copyNode(replacePatterns(&node->children[i], localContext));
     }
     return definedExpression;
 }
@@ -552,7 +536,7 @@ void patternMatch(Expression *inputTree, Expression *leftNode, struct Context *l
                 localContext->definitions[localContext->numNames - 1].size = 1;
                 localContext->definitions[localContext->numNames - 1].definitionArray =
                         (Expression *) malloc(sizeof(Expression));
-                *localContext->definitions[localContext->numNames - 1].definitionArray = inputTree->children[i];
+                *localContext->definitions[localContext->numNames - 1].definitionArray = *copyNode(&inputTree->children[i]);
             }
         }
     }
