@@ -213,6 +213,11 @@ Expression *len(struct Expression *node) {
     if (node->numChildren == 0) {
         return node;
     }
+    if (node->children[0].numChildren > 0) {
+        char symbol[100];
+        sprintf(symbol, "%d", node->children[0].numChildren);
+        return createNode(symbol);
+    }
     Expression *setTree = NULL;
     for (size_t i = 0; i < context.numNames; i++) {
         if (strcmp(node->children[0].symbol, context.names[i]) == 0) {
@@ -236,6 +241,9 @@ Expression *first(struct Expression *node) {
     if (node->numChildren == 0) {
         return node;
     }
+    if (node->children[0].numChildren > 0) {
+        return &node->children[0].children[0];
+    }
     Expression *setTree = NULL;
     for (size_t i = 0; i < context.numNames; i++) {
         if (strcmp(node->children[0].symbol, context.names[i]) == 0) {
@@ -257,6 +265,9 @@ Expression *last(struct Expression *node) {
     if (node->numChildren == 0) {
         return node;
     }
+    if (node->children[0].numChildren > 0) {
+        return &node->children[0].children[node->children[0].numChildren - 1];
+    }
     Expression *setTree = NULL;
     for (size_t i = 0; i < context.numNames; i++) {
         if (strcmp(node->children[0].symbol, context.names[i]) == 0) {
@@ -276,6 +287,13 @@ Expression *last(struct Expression *node) {
 Expression *rest(struct Expression *node) {
     if (node->numChildren == 0) {
         return node;
+    }
+    if (node->children[0].numChildren > 0) {
+        Expression *res = createNode(node->children[0].symbol);
+        for (int i = 1; i < node->children[0].numChildren; i++) {
+            addChild(res,&node->children[0].children[i]);
+        }
+        return res;
     }
     Expression *setTree = NULL;
     for (size_t i = 0; i < context.numNames; i++) {
@@ -311,8 +329,8 @@ int isOperator(char *symbol) {
 }
 
 Expression *replaceUnknowns(Expression *node) {
-//    printExpression(node);
-//    printf("\n");
+    printExpression(node);
+    printf("\n");
 //    printContext();
     if (node == NULL) {
         return NULL;
@@ -328,8 +346,11 @@ Expression *replaceUnknowns(Expression *node) {
         node = res;
     }
     if (strcmp(node->symbol, "len") == 0) {
+        printExpression(len(node));
+        printf("\n");
         return len(node);
     }
+
     if (strcmp(node->symbol, "first") == 0) {
         return first(node);
     }
@@ -396,14 +417,14 @@ Expression *replaceUnknowns(Expression *node) {
             node->children = NULL;
             node->numChildren = 0;
             node = res;
-            return node;
+           // return node;
         } else if (strcmp(node->symbol, "more") == 0) {
             Expression *res = more(node);
             free(node->children);
             node->children = NULL;
             node->numChildren = 0;
             node = res;
-            return node;
+          //  return node;
         } else if (strcmp(node->symbol, "plot") == 0) {
 //                node->children = evaluate(node->children);
 //                struct PlotDTO *plotDto = parsePLot(node);
@@ -440,24 +461,24 @@ Expression *replaceUnknowns(Expression *node) {
         for (int i = 0; i < node->numChildren; i++) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
         }
-        for (size_t i = 0; i < context.numNames; i++) {
-            if (strcmp(node->symbol, context.names[i]) == 0) {
-                Expression *setTree = findDefinition(context.definitions[i], node);
-
-                if (expressionsEqual(setTree, node)) {
-                    return node;
-                }
-                return compareAndAddToContext(node, setTree);
-            }
-        }
-        return node;
+//        for (size_t i = 0; i < context.numNames; i++) {
+//            if (strcmp(node->symbol, context.names[i]) == 0) {
+//                Expression *setTree = findDefinition(context.definitions[i], node);
+//
+//                if (expressionsEqual(setTree, node)) {
+//                    return node;
+//                }
+//                return compareAndAddToContext(node, setTree);
+//            }
+//        }
+//        return node;
     }
 
     if (node->hold == FIRST) {
         for (int i = 1; i < node->numChildren; i++) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
         }
-        return node;
+     //   return node;
     }
 
     if (node->hold == REST) {
@@ -624,6 +645,8 @@ Expression *evaluate(
         *prevResult = *copyNode(expression);
         expression = setHolds(expression);
         expression = replaceUnknowns(expression);
+        expression = replaceUnknowns(expression);
+
     }
 
     return expression;
