@@ -254,7 +254,8 @@ Expression *first(struct Expression *node) {
         if (strcmp(setTree->children[1].children[0].symbol,"") == 0) {
             return createNode("Null");
         } else {
-            return createNode(setTree->children[1].children[0].symbol);
+            return copyNode(setTree->children[1].children);
+//            return createNode(setTree->children[1].children[0].symbol);
         }
     }
     return node;
@@ -645,7 +646,7 @@ Expression *evaluate(
         *prevResult = *copyNode(expression);
         expression = setHolds(expression);
         expression = replaceUnknowns(expression);
-        expression = replaceUnknowns(expression);
+
 
     }
 
