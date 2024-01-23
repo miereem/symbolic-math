@@ -16,9 +16,15 @@ static struct Context context = {
         .numNames = 0,
 };
 
+
+static struct HoldBank holdBank = {
+        .num = 0,
+};
+
 void initContext() {
     context.names = malloc(sizeof(char *));
     context.definitions = malloc(sizeof(DefinitionArray));
+    holdBank.holdInfos = malloc(sizeof(struct HoldInfo));
 }
 
 int isInContext(char *name) {
@@ -42,6 +48,8 @@ void printLocalContext(struct Context context) {
         printf("\n");
     }
 }
+
+
 
 int isDefaultDefinition(Expression *expression) {
     int cnt = 0;
@@ -106,17 +114,17 @@ int addName(char *symbol) {
     return context.numNames - 1;
 }
 
+
 void addAttrs(char *name, enum Hold attr) {
-    int index;
-    if ((index = isInContext(name)) != -1) {
-        for (int i = 0; i < context.definitions[index].size; i++) {
-            context.definitions[index].definitionArray[i].children[1].hold = attr;
-        }
-    }
+    struct HoldInfo holdInfo;
+    holdInfo.name = strdup(name);
+    holdInfo.hold = attr;
+    holdBank.num++;
+    holdBank.holdInfos = realloc(holdBank.holdInfos, holdBank.num * sizeof (struct HoldInfo));
+    holdBank.holdInfos[holdBank.num - 1] = holdInfo;
 }
 
-int
-argumentsMatch(Expression *definition, Expression *node) { //0 - arguments match ,  1 - default, 2 - has no definition
+int argumentsMatch(Expression *definition, Expression *node) { //0 - arguments match ,  1 - default, 2 - has no definition
     int cnt = 0;
     for (size_t i = 0; i < definition->numChildren; i++) {
         if (strcmp(node->children[i].symbol, definition->children[i].symbol) != 0 &&
@@ -289,16 +297,22 @@ Expression *rest(struct Expression *node) {
     return node;
 }
 
+Expression *seq(struct Expression *node) {
+    if (node->numChildren == 0) {
+        return node;
+    }
+    return &node->children[node->numChildren-1];
+}
+
 int isOperator(char *symbol) {
     return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "div") == 0 ||
            strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0 || strcmp(symbol, "plot") == 0 ||
-           strcmp(symbol, "numberQ") == 0 || strcmp(symbol, "append") == 0 || strcmp(symbol, "len") == 0;
+           strcmp(symbol, "numberQ") == 0 || strcmp(symbol, "append") == 0 || strcmp(symbol, "len") == 0 || strcmp(symbol, "seq") == 0;
 }
 
 Expression *replaceUnknowns(Expression *node) {
-//    printf("replace \n");
-//    printExpression(node);
-//    printf("\n");
+    printExpression(node);
+    printf("\n");
 //    printContext();
     if (node == NULL) {
         return NULL;
@@ -332,7 +346,7 @@ Expression *replaceUnknowns(Expression *node) {
         return node;
     }
     if (strcmp(node->symbol, "addAttrs") == 0) {
-        enum Hold hold = 0;
+        enum Hold hold = NONE;
         if (strcmp(node->children[1].symbol, "holdAll") == 0) {
             hold = ALL;
         }
@@ -346,28 +360,39 @@ Expression *replaceUnknowns(Expression *node) {
         return node;
     }
 
-    if (node->hold == 0) {
+
+
+    if (node->hold == NONE) {
         for (int i = 0; i < node->numChildren; i++) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
         }
-    }
+        for (size_t i = 0; i < context.numNames; i++) {
+            if (strcmp(node->symbol, context.names[i]) == 0) {
+                Expression *setTree = findDefinition(context.definitions[i], node);
 
-
-    if (node->hold == 1) {
+                if (expressionsEqual(setTree, node)) {
+                    return node;
+                }
+//                printf("jhghjg\n");
+//                printExpression(compareAndAddToContext(node, setTree));
+                printf("\n");
+                return compareAndAddToContext(node, setTree);
+            }
+        }
         return node;
     }
 
-    if (node->hold == 2) {
+    if (node->hold == FIRST) {
         for (int i = 1; i < node->numChildren; i++) {
             node->children[i] = *replaceUnknowns(&node->children[i]);
         }
-    }
-    if (node->hold == 3) {
-        for (int i = 0; i < 2; i++) {
-            node->children[i] = *replaceUnknowns(&node->children[i]);
-        }
+        return node;
     }
 
+    if (node->hold == REST) {
+        node->children[0] = *replaceUnknowns(&node->children[0]);
+        return node;
+    }
 
     if (isOperator(node->symbol)) {
         int allChildrenEvaluated = 1;
@@ -403,17 +428,30 @@ Expression *replaceUnknowns(Expression *node) {
                 free(node->children);
                 node->children = NULL;
                 node->numChildren = 0;
+                printf("hey\n");
+                printExpression(res);
+                printf("\n");
+
                 node = res;
+                printExpression(res);
+                printf("\n");
+
+                printExpression(node);
+                printf("\n");
+
+
+                return node;
             } else if (strcmp(node->symbol, "more") == 0) {
                 Expression *res = more(node);
                 free(node->children);
                 node->children = NULL;
                 node->numChildren = 0;
                 node = res;
+                return node;
             } else if (strcmp(node->symbol, "plot") == 0) {
-                node->children = evaluate(node->children);
-                struct PlotDTO *plotDto = parsePLot(node);
-                plot(plotDto->plots, plotDto->width, plotDto->height);
+//                node->children = evaluate(node->children);
+//                struct PlotDTO *plotDto = parsePLot(node);
+//                plot(plotDto->plots, plotDto->width, plotDto->height);
                 return node;
             } else if (strcmp(node->symbol, "numberQ") == 0) {
                 Expression *res = numberQ(node);
@@ -427,6 +465,13 @@ Expression *replaceUnknowns(Expression *node) {
                 node->children = NULL;
                 node->numChildren = 0;
                 node = res;
+            } else if (strcmp(node->symbol, "seq") == 0) {
+//                node = &node->children[node->numChildren-1];
+//                Expression *res = seq(node);
+//                free(node->children);
+//                node->children = NULL;
+//                node->numChildren = 0;
+//                node = res;
             }
         }
     }
@@ -531,6 +576,50 @@ Expression *compareAndAddToContext(Expression *inputTree, Expression *setTree) {
     return replaceRightChild(rightNode, &localContext);
 }
 
+Expression *setHolds(Expression *expr) {
+    for(int i = 0; i < holdBank.num; i++) {
+        if(strcmp(holdBank.holdInfos[i].name, expr->symbol) == 0) {
+            expr->hold = holdBank.holdInfos[i].hold;
+        }
+    }
+    for (int i = 0; i < expr->numChildren; i++) {
+        setHolds(&expr->children[i]);
+    }
+    return  expr;
+}
+
+
+
+Expression *holdlevel(Expression *node) {
+
+    if (node->hold == NONE) {
+        for (int i = 0; i < node->numChildren; i++) {
+            node->children[i] = *holdlevel(&node->children[i]);
+        }
+        return replaceUnknowns(node);
+
+    }
+    else if (node->hold == REST) {
+        node->children[0] = *holdlevel(&node->children[0]);
+        return replaceUnknowns(node);
+
+    }
+    else if (node->hold == FIRST) {
+        for (int i = 0; i < node->numChildren; i++) {
+            node->children[i] = *holdlevel(&node->children[i]);
+        }
+        return replaceUnknowns(node);
+
+
+    }
+    else if (node->hold == ALL) {
+        return replaceUnknowns(node);
+    }
+    return node;
+}
+
+
+
 Expression *evaluate(
         Expression *expression) {
     Expression *prevResult = NULL;
@@ -543,10 +632,9 @@ Expression *evaluate(
 
         prevResult = (Expression *) malloc(sizeof(Expression));
         *prevResult = *copyNode(expression);
-
+        expression = setHolds(expression);
         expression = replaceUnknowns(expression);
     }
-    // expression = replaceUnknowns(expression);
 
     return expression;
 }
@@ -563,6 +651,11 @@ void printContext() {
         }
 
         printf("\n");
+    }
+
+    for (size_t i = 0; i < holdBank.num; i++) {
+            printf("%s := %d", holdBank.holdInfos[i].name, holdBank.holdInfos[i].hold);
+            printf("\n");
     }
 }
 

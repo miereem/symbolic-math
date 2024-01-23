@@ -105,6 +105,7 @@ struct Expression *numberQ(struct Expression *node) {
 }
 
 
+
 struct Expression *divide(struct Expression *node) {
     if (node->numChildren == 0) {
         return node;
@@ -148,5 +149,7 @@ struct Expression *divide(struct Expression *node) {
 
     return res;
 }
+
+
 
 

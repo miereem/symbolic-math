@@ -49,4 +49,14 @@ struct Context {
     DefinitionArray *definitions;
 };
 
+struct HoldInfo {
+    char *name;
+    enum Hold hold;
+};
+
+struct HoldBank {
+     size_t num;
+     struct HoldInfo *holdInfos;
+};
+
 #endif //SYMBOLIC_STRUCTURES_H

@@ -70,6 +70,6 @@ void freeExpression(Expression *expr)
      }
 
      // Free the Expression structure itself
-     free(expr);
+   //  free(expr);
  }
 
