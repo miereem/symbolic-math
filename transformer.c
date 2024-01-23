@@ -311,8 +311,8 @@ int isOperator(char *symbol) {
 }
 
 Expression *replaceUnknowns(Expression *node) {
-    printExpression(node);
-    printf("\n");
+//    printExpression(node);
+//    printf("\n");
 //    printContext();
     if (node == NULL) {
         return NULL;
@@ -456,7 +456,7 @@ Expression *replaceUnknowns(Expression *node) {
 
     if (node->hold == REST) {
         node->children[0] = *replaceUnknowns(&node->children[0]);
-        return node;
+//        return node;
     }
 
 
