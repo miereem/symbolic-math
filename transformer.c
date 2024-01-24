@@ -326,12 +326,12 @@ Expression *seq(struct Expression *node) {
 int isOperator(char *symbol) {
     return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "div") == 0 ||
            strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0 || strcmp(symbol, "plot") == 0 ||
-           strcmp(symbol, "numberQ") == 0 || strcmp(symbol, "append") == 0 || strcmp(symbol, "len") == 0 || strcmp(symbol, "seq") == 0;
+           strcmp(symbol, "numberQ") == 0 || strcmp(symbol, "append") == 0 || strcmp(symbol, "len") == 0 ;
 }
 
 Expression *replaceUnknowns(Expression *node) {
-    printExpression(node);
-    printf("\n");
+//    printExpression(node);
+//    printf("\n");
 //    printContext();
     if (node == NULL) {
         return NULL;
@@ -443,7 +443,7 @@ Expression *replaceUnknowns(Expression *node) {
             node->children = NULL;
             node->numChildren = 0;
             node = res;
-        } else if (strcmp(node->symbol, "seq") == 0) {
+//        } else if (strcmp(node->symbol, "seq") == 0) {
 //                node = &node->children[node->numChildren-1];
 //                Expression *res = seq(node);
 //                free(node->children);
@@ -634,6 +634,14 @@ Expression *holdlevel(Expression *node) {
 
 Expression *evaluate(
         Expression *expression) {
+
+
+//        last = (Expression *) malloc(sizeof(Expression));
+        Expression *last = copyNode(expression);
+//        printExpression(last);
+
+
+
     Expression *prevResult = NULL;
     while (prevResult == NULL || expressionsEqual(expression, prevResult) == 0) {
         if (prevResult != NULL) {
@@ -646,12 +654,33 @@ Expression *evaluate(
         *prevResult = *copyNode(expression);
         expression = setHolds(expression);
         expression = replaceUnknowns(expression);
-
+//        printExpression(expression);
+//        printf("\n");
 
     }
+    if (strcmp(expression->symbol, "seq") == 0) {
+        return replaceUnknowns(&last->children[last->numChildren-1]);
+        printf("jkhkjhkj\n");
+    }
+
+
 
     return expression;
 }
+
+
+//Expression *evaluate(
+//        Expression *expression) {
+//
+//    if (strcmp(expression->symbol, "seq") == 0) {
+//        for (int i = 0; i < expression->numChildren; i++) {
+//            expression->children[i] = *evaluate1(&expression->children[i]);
+//        }
+//    } else {
+//        evaluate1(expression);
+//    }
+//    return expression;
+//}
 
 
 void printContext() {
