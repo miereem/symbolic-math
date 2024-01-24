@@ -326,12 +326,12 @@ Expression *seq(struct Expression *node) {
 int isOperator(char *symbol) {
     return strcmp(symbol, "sum") == 0 || strcmp(symbol, "mul") == 0 || strcmp(symbol, "div") == 0 ||
            strcmp(symbol, "less") == 0 || strcmp(symbol, "more") == 0 || strcmp(symbol, "plot") == 0 ||
-           strcmp(symbol, "numberQ") == 0 || strcmp(symbol, "append") == 0 || strcmp(symbol, "len") == 0 ;
+           strcmp(symbol, "numberQ") == 0 || strcmp(symbol, "append") == 0 || strcmp(symbol, "len") == 0 || strcmp(symbol, "eq") == 0 ;
 }
 
 Expression *replaceUnknowns(Expression *node) {
-//    printExpression(node);
-//    printf("\n");
+    printExpression(node);
+    printf("\n");
 //    printContext();
     if (node == NULL) {
         return NULL;
@@ -426,6 +426,13 @@ Expression *replaceUnknowns(Expression *node) {
             node->numChildren = 0;
             node = res;
           //  return node;
+        } else if (strcmp(node->symbol, "eq") == 0) {
+            Expression *res = eq(node);
+            free(node->children);
+            node->children = NULL;
+            node->numChildren = 0;
+            node = res;
+            //  return node;
         } else if (strcmp(node->symbol, "plot") == 0) {
 //                node->children = evaluate(node->children);
 //                struct PlotDTO *plotDto = parsePLot(node);

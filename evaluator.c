@@ -63,6 +63,19 @@ struct Expression *more(struct Expression *node) {
         return createNode("true");
     } else return copyNode(node);
 }
+struct Expression *eq(struct Expression *node) {
+    if (node->numChildren != 2) {
+        return copyNode(node);
+    }
+    if (((isdigit(node->children[0].symbol[0])) != 0 || node->children[0].symbol[0] == '-') && ((isdigit(node->children[1].symbol[0])) != 0 || node->children[1].symbol[0] == '-') ) {
+        double first = atof(node->children[0].symbol);
+        double second = atof(node->children[1].symbol);
+        if (first != second) {
+            return createNode("false");
+        }
+        return createNode("true");
+    } else return copyNode(node);
+}
 
 
 struct Expression *mul(struct Expression *node) {

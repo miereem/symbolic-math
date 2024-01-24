@@ -43,10 +43,10 @@ int main() {
                 "insert[l_,n_,s_],"
                 "seq["
                 "set[m3,l[]],"
-                "set[counter,0],"
+                "set[counter3,0],"
                 "while["
-                "less[counter, len[l]], "
-                "seq[if[eq[counter, n], append[m3,s], append[m3,seq[get[l, counter], first[m]]]], set[counter, sum[counter,1]]]"
+                "less[counter3, len[l]], "
+                "seq[if[eq[counter3, n], append[m3,s],get[l, counter3], append[m3,first[m]]], set[counter3, sum[counter3,1]]]"
                 "]"
                 "]"
                 "]";
@@ -83,10 +83,10 @@ int main() {
 
 //    solve(&check);
 //    solve(&check2);
-    solve(&drop);
-    solve(&test_drop);
-//    solve(&insert);
-//    solve(&test_insert);
+//    solve(&drop);
+//    solve(&test_drop);
+    solve(&insert);
+    solve(&test_insert);
 //    solve(&test2);
 
 
